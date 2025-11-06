@@ -1,0 +1,21 @@
+# .gitignore
+
+*.log
+*.tmp
+*.bak
+
+# Sphinx build output
+_build/
+dist/
+__pycache__/
+*.doctree
+*.pickle
+*.html
+*.js
+*.css
+*.png
+*.svg
+*.pdf
+*.epub
+
+
