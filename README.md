@@ -1,9 +1,9 @@
-***HFpEF***
+***H2FpEF***
 
 
 **An app to screen for HFpEF**
 
-*and a learning platform for me to practice:*
+*And a learning platform for me to practice:*
 
 * Python
 * wxPython
@@ -12,6 +12,7 @@
 * tests
 * packaging
 * languages
+* validators
 * PyCharm
 * clipboard (drag-n-drop)
 * project structuring
@@ -23,3 +24,12 @@ On PubMed https://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/
 Excel calculator https://pmc.ncbi.nlm.nih.gov/articles/instance/6202181/bin/NIHMS970899-supplement-Online_Calculator.xlsx
 
 AAFP Journal (may be behind a membership wall) https://pmc.ncbi.nlm.nih.gov/articles/instance/6202181/bin/NIHMS970899-supplement-Online_Calculator.xlsx
+
+License:
+
+Not sure what the license will be, but will be open and GNU or MIT?
+
+Dependencies:
+
+For now the only dependencies are; Python >= 3.13 and wxPython
+
