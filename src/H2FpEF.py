@@ -1,3 +1,5 @@
+import webbrowser
+
 import wx
 
 
@@ -12,6 +14,8 @@ class Main_Frame(wx.Frame):
 
         self.create_menu()
         self.CreateStatusBar()
+        panel = wx.Panel(self)
+        self.panel = panel
 
 
     def create_menu(self):
@@ -63,13 +67,15 @@ class Main_Frame(wx.Frame):
         pass
 
     def on_circulation(self, event):
-        pass
+        url = 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/'
+        webbrowser.open(url)
 
     def on_aafp(self, event):
-        pass
+        url = 'https://www.aafp.org/pubs/afp/issues/2025/1000/heart-failure-preserved-ejection-fraction.html'
+        webbrowser.open(url)
 
     def on_gdmt_gdmt(self, event):
-        pass
+       pass
 
     def on_gdmt_sympt(self, event):
         pass
