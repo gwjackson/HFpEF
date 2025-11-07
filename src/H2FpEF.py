@@ -21,20 +21,28 @@ class Main_Frame(wx.Frame):
 
         menu_bar = wx.MenuBar()
 
+        # About Menu
         aboutMenu = wx.Menu()
 
         help_menu_item = aboutMenu.Append(wx.ID_ANY, '&About', 'About the H2FpEF')
         self.Bind(wx.EVT_MENU, self.on_help, help_menu_item)
 
-        citation_item = aboutMenu.Append(wx.ID_ANY, '&Citation', 'Citation information')
-        self.Bind(wx.EVT_MENU, self.on_citation, citation_item)
-        ### TO DO add citation sub-menus
+        # Citation Menu and Submenu
+        citationMenu = wx.Menu()
+        cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'Circulation 2018', 'Journal Circulation 2018')
+        self.Bind(wx.EVT_MENU, self.on_circulation, cit_circulation_item)
+        cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'AAFP 2025', 'AAFP journal 2025')
+        self.Bind(wx.EVT_MENU, self.on_aafp, cit_circulation_item)
+
+        aboutMenu.AppendSubMenu(citationMenu, '&Citation')
+
 
         exit_menu_item = aboutMenu.Append(wx.ID_EXIT, '&Exit', 'Exit / Terminate the application')
         self.Bind(wx.EVT_MENU, self.on_exit, exit_menu_item)
 
         menu_bar.Append(aboutMenu, '&About')
 
+        # GDMT menu
         gdmtMenu = wx.Menu()
 
         gdmt_menu_item = gdmtMenu.Append(wx.ID_ANY, '&GDMT', 'Guideline Directed Medical Therapy for HFpEF')
@@ -49,12 +57,15 @@ class Main_Frame(wx.Frame):
 
 
     def on_exit(self, event):
-        pass
+        self.Close()
 
     def on_help(self, event):
         pass
 
-    def on_citation(self, event):
+    def on_circulation(self, event):
+        pass
+
+    def on_aafp(self, event):
         pass
 
     def on_gdmt_gdmt(self, event):
