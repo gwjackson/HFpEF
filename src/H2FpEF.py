@@ -1,7 +1,5 @@
 import webbrowser
-
 import wx
-
 
 
 class Main_Frame(wx.Frame):
@@ -10,12 +8,11 @@ class Main_Frame(wx.Frame):
     """
 
     def __init__(self):
-        super().__init__(None, title='H2FpEF - risk calculator')
+        super().__init__(None, title='H2FpEF - risk calculator', size=(550, 400))
 
         self.create_menu()
         self.CreateStatusBar()
-        panel = wx.Panel(self)
-        self.panel = panel
+        self.create_main_panel()
 
 
     def create_menu(self):
@@ -80,6 +77,95 @@ class Main_Frame(wx.Frame):
     def on_gdmt_sympt(self, event):
         pass
 
+
+    # and now some sizers for the mainpanel plan is a 5 column x 10 row gridbagsizer
+    def create_main_panel(self):
+        main_panel = wx.Panel(self)
+        mp_sizer = wx.GridBagSizer(0,0)
+
+        colblk = wx.StaticText(main_panel, label='  ')
+        mp_sizer.Add(colblk, pos=(0,0), flag=wx.ALL, border=5)
+        colclivar = wx.StaticText(main_panel, label='Clinical Variable')
+        mp_sizer.Add(colclivar, pos=(0,1), flag=wx.ALL, border=5)
+        colvalue = wx.StaticText(main_panel, label='Values')
+        mp_sizer.Add(colvalue, pos=(0,2), flag=wx.ALL, border=5)
+        colpoints = wx.StaticText(main_panel, label='Points')
+        mp_sizer.Add(colpoints, pos=(0,3), flag=wx.ALL, border=5)
+        colreg = wx.StaticText(main_panel, label='Regression')
+        mp_sizer.Add(colreg, pos=(0,4), flag=wx.ALL, border=5)
+
+
+        keyH2 = wx.StaticText(main_panel, label='H2')
+        mp_sizer.Add(keyH2, pos=(1,0), span= (2,1), flag=wx.ALL, border=5)
+
+        cvheavy = wx.StaticText(main_panel, label='Heavy')
+        mp_sizer.Add(cvheavy, pos=(1,1), flag=wx.ALL, border=5)
+        valheavy = wx.StaticText(main_panel, label='Body mass index > 30 kg/m**2')
+        mp_sizer.Add(valheavy, pos=(1,2), flag=wx.ALL, border=5)
+        pointheavy = wx.StaticText(main_panel, label='2')
+        mp_sizer.Add(pointheavy, pos=(1,3), flag=wx.ALL, border=5)
+        regheavy = wx.StaticText(main_panel, label='??')
+        mp_sizer.Add(regheavy, pos=(1,4), flag=wx.ALL, border=5)
+
+        cvhtn = wx.StaticText(main_panel, label='Hypertension')
+        mp_sizer.Add(cvhtn, pos=(2,1), flag=wx.ALL, border=5)
+        valhtn = wx.StaticText(main_panel, label='2 or more antihypertensive medicines')
+        mp_sizer.Add(valhtn, pos=(2,2), flag=wx.ALL, border=5)
+        pointhtn = wx.StaticText(main_panel, label='1')
+        mp_sizer.Add(pointhtn, pos=(2,3), flag=wx.ALL, border=5)
+        reghtn = wx.StaticText(main_panel, label='??')
+        mp_sizer.Add(reghtn, pos=(2,4), flag=wx.ALL, border=5)
+
+        keyf = wx.StaticText(main_panel, label='F')
+        mp_sizer.Add(keyf, pos=(3,0), flag=wx.ALL, border=5)
+        cvf = wx.StaticText(main_panel, label='Atrial Fibrillation')
+        mp_sizer.Add(cvf, pos=(3,1), flag=wx.ALL, border=5)
+        valf = wx.StaticText(main_panel, label='Paroxysmal or Persistent')
+        mp_sizer.Add(valf, pos=(3,2), flag=wx.ALL, border=5)
+        pointhf = wx.StaticText(main_panel, label='3')
+        mp_sizer.Add(pointhf, pos=(3,3), flag=wx.ALL, border=5)
+        reghf = wx.StaticText(main_panel, label='??')
+        mp_sizer.Add(reghf, pos=(3,4), flag=wx.ALL, border=5)
+
+        keyph = wx.StaticText(main_panel, label='P')
+        mp_sizer.Add(keyph, pos=(4,0), flag=wx.ALL, border=5)
+        cvph = wx.StaticText(main_panel, label='Pulmonary Hypertension')
+        mp_sizer.Add(cvph, pos=(4,1), flag=wx.ALL, border=5)
+        valph = wx.StaticText(main_panel, label='Doppler Echocardiographic\nestimated Pulmonary Artery Systolic\nPressure > 35mmHg')
+        mp_sizer.Add(valph, pos=(4,2), flag=wx.ALL, border=5)
+        pointph = wx.StaticText(main_panel, label='1')
+        mp_sizer.Add(pointph, pos=(4,3), flag=wx.ALL, border=5)
+        regph = wx.StaticText(main_panel, label='??')
+        mp_sizer.Add(regph, pos=(4,4), flag=wx.ALL, border=5)
+
+        keyold = wx.StaticText(main_panel, label='E')
+        mp_sizer.Add(keyold, pos=(5,0), flag=wx.ALL, border=5)
+        cvold = wx.StaticText(main_panel, label='Elder')
+        mp_sizer.Add(cvold, pos=(5,1), flag=wx.ALL, border=5)
+        valold = wx.StaticText(main_panel, label='Age > 60 years')
+        mp_sizer.Add(valold, pos=(5,2), flag=wx.ALL, border=5)
+        pointold = wx.StaticText(main_panel, label='1')
+        mp_sizer.Add(pointold, pos=(5,3), flag=wx.ALL, border=5)
+        regold = wx.StaticText(main_panel, label='??')
+        mp_sizer.Add(regold, pos=(5,4), flag=wx.ALL, border=5)
+
+        keyf = wx.StaticText(main_panel, label='F')
+        mp_sizer.Add(keyf, pos=(6,0), flag=wx.ALL, border=5)
+        cvf = wx.StaticText(main_panel, label='Filling Pressure')
+        mp_sizer.Add(cvf, pos=(6,1), flag=wx.ALL, border=5)
+        valf = wx.StaticText(main_panel, label='Doppler Echocardiographic E/e`')
+        mp_sizer.Add(valf, pos=(6,2), flag=wx.ALL, border=5)
+        pointf = wx.StaticText(main_panel, label='1')
+        mp_sizer.Add(pointf, pos=(6,3), flag=wx.ALL, border=5)
+        regf = wx.StaticText(main_panel, label='??')
+        mp_sizer.Add(regf, pos=(6,4), flag=wx.ALL, border=5)
+
+
+
+
+
+
+        main_panel.SetSizer(mp_sizer)
 
 
 
