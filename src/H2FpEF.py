@@ -8,7 +8,7 @@ class Main_Frame(wx.Frame):
     """
 
     def __init__(self):
-        super().__init__(None, title='H2FpEF - risk calculator', size=(550, 400))
+        super().__init__(None, title='H2FpEF - risk calculator', size=(600, 550), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
 
         self.create_menu()
         self.CreateStatusBar()
@@ -81,7 +81,7 @@ class Main_Frame(wx.Frame):
     # and now some sizers for the mainpanel plan is a 5 column x 10 row gridbagsizer
     def create_main_panel(self):
         main_panel = wx.Panel(self)
-        mp_sizer = wx.GridBagSizer(0,0)
+        mp_sizer = wx.GridBagSizer(10,10)
 
         self.colblk = wx.StaticText(main_panel, label='  ')
         mp_sizer.Add(self.colblk, pos=(0,0), flag=wx.ALL, border=5)
@@ -167,6 +167,16 @@ class Main_Frame(wx.Frame):
         self.regf.SetMinSize((60, -1))
         self.regf.SetRange(1, 30)
         mp_sizer.Add(self.regf, pos=(6,4), flag=wx.ALL, border=5)
+
+        # the scoring nomogram
+        # need to scale for inital display and w/resize events
+        frame_width, frame_height = (550, 100)
+        self.nomo_img = wx.Image('nihms_score_1.png', wx.BITMAP_TYPE_PNG)
+        self.nomo_img = self.nomo_img.Rescale(frame_width, frame_height, quality=wx.IMAGE_QUALITY_HIGH)
+        self.nomo_bitmap = wx.StaticBitmap(main_panel, -1, wx.Bitmap(self.nomo_img))
+        mp_sizer.Add(self.nomo_bitmap, pos=(7,0), span=(4,7), flag=wx.ALL, border=5)
+
+
 
 
 
