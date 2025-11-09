@@ -176,7 +176,7 @@ class Main_Frame(wx.Frame):
 
         self.regscore = wx.StaticText(main_panel, label='Regression - Score')
         mp_sizer.Add(self.regscore, pos=(8, 2), flag=wx.ALL | wx.ALIGN_RIGHT, border=5)
-        self.regvalue = wx.StaticText(main_panel, label='0.0. 1.0')
+        self.regvalue = wx.StaticText(main_panel, label='0.0 - 1.0')
         mp_sizer.Add(self.regvalue, pos=(8, 4), flag=wx.ALL, border=5)
 
         # the scoring nomogram
