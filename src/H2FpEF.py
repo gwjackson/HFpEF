@@ -8,7 +8,7 @@ class Main_Frame(wx.Frame):
     """
 
     def __init__(self):
-        super().__init__(None, title='H2FpEF - risk calculator', size=(600, 550), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
+        super().__init__(None, title='H2FpEF - risk calculator', size=(600, 700), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
 
         self.create_menu()
         self.CreateStatusBar()
@@ -168,13 +168,38 @@ class Main_Frame(wx.Frame):
         self.regf.SetRange(1, 30)
         mp_sizer.Add(self.regf, pos=(6,4), flag=wx.ALL, border=5)
 
+        # score total rows
+        self.pntscore = wx.StaticText(main_panel, label='Point - Score')
+        mp_sizer.Add(self.pntscore, pos=(7, 2), flag=wx.ALL | wx.ALIGN_RIGHT, border=5)
+        self.pntvalue = wx.StaticText(main_panel, label='0 - 9')
+        mp_sizer.Add(self.pntvalue, pos=(7, 3), flag=wx.ALL, border=5)
+
+        self.regscore = wx.StaticText(main_panel, label='Regression - Score')
+        mp_sizer.Add(self.regscore, pos=(8, 2), flag=wx.ALL | wx.ALIGN_RIGHT, border=5)
+        self.regvalue = wx.StaticText(main_panel, label='0.0. 1.0')
+        mp_sizer.Add(self.regvalue, pos=(8, 4), flag=wx.ALL, border=5)
+
         # the scoring nomogram
         # need to scale for inital display and w/resize events
         frame_width, frame_height = (550, 100)
         self.nomo_img = wx.Image('nihms_score_1.png', wx.BITMAP_TYPE_PNG)
         self.nomo_img = self.nomo_img.Rescale(frame_width, frame_height, quality=wx.IMAGE_QUALITY_HIGH)
         self.nomo_bitmap = wx.StaticBitmap(main_panel, -1, wx.Bitmap(self.nomo_img))
-        mp_sizer.Add(self.nomo_bitmap, pos=(7,0), span=(4,7), flag=wx.ALL, border=5)
+        mp_sizer.Add(self.nomo_bitmap, pos=(9,0), span=(1,9), flag=wx.ALL, border=5)
+
+        #add cal / reset buttons
+        self.pointcalc = wx.Button(main_panel, -1, "Points Calculate")
+        mp_sizer.Add(self.pointcalc, pos=(10,1), flag=wx.ALL, border=5)
+
+        self.regcalc = wx.Button(main_panel, -1, "Regression Calculate")
+        mp_sizer.Add(self.regcalc, pos=(11,1), flag=wx.ALL, border=5)
+
+        self.reset = wx.Button(main_panel, -1, "Reset")
+        mp_sizer.Add(self.reset, pos=(10,2), flag=wx.ALL|wx.ALIGN_RIGHT, border=5)
+
+
+
+
 
 
 
