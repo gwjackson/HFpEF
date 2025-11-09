@@ -1,15 +1,33 @@
 import webbrowser
+from collections import namedtuple
 import wx
 
 
 class Main_Frame(wx.Frame):
     """
     main frame for the H2FpEF calculator
+
+    clinic data is dic of  key : namedtuples
+        {
+        clinic_variable (str) : (ckbox=str, points=int, reg_value=float, std_range=str, key=str),
+        ...
+        {
     """
+
 
     def __init__(self):
         super().__init__(None, title='H2FpEF - risk calculator', size=(600, 700), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
 
+        # table data
+        screen_data = namedtuple('ckbox',['points', 'reg_value', 'std_range', 'row_lable'])
+        tb_date = {
+            'pointheavy': screen_data(2, 0.130730156015681, '22.5 - 40.4', 'H2'),
+            'pointhtn'  : screen_data(1, 0, '22.5 - 40.4', 'H2'),
+            'pointaf'   : screen_data(3, 1.69968057294513, '0 - 1', 'F'),
+            'pointph'   : screen_data(1, 0.051963758732548, '25 - 50', 'P'),
+            'pointold'  : screen_data(1, 0.0451129471272832, '41 - 79', 'E'),
+            'pointf'    : screen_data(1, 0.0858634402456586, '6 - 21', 'F'),
+        }
         self.create_menu()
         self.CreateStatusBar()
         self.create_main_panel()
@@ -103,7 +121,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valheavy, pos=(1,2), flag=wx.ALL, border=5)
         self.pointheavy = wx.CheckBox(main_panel, -1, label='2')
         mp_sizer.Add(self.pointheavy, pos=(1,3), flag=wx.ALL, border=5)
-        self.regheavy = wx.SpinCtrl(main_panel, -1, value='30')
+        self.regheavy = wx.SpinCtrl(main_panel, -1, value='0')
         self.regheavy.SetMinSize((60,-1))
         self.regheavy.SetRange(15, 50)
         mp_sizer.Add(self.regheavy, pos=(1,4), flag=wx.ALL, border=5)
@@ -137,7 +155,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valph, pos=(4,2), flag=wx.ALL, border=5)
         self.pointph = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointph, pos=(4,3), flag=wx.ALL, border=5)
-        self.regph = wx.SpinCtrl(main_panel, -1, value='35')
+        self.regph = wx.SpinCtrl(main_panel, -1, value='0')
         self.regph.SetMinSize((60,-1))
         self.regph.SetRange(20, 60)
         mp_sizer.Add(self.regph, pos=(4,4), flag=wx.ALL, border=5)
@@ -150,7 +168,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valold, pos=(5,2), flag=wx.ALL, border=5)
         self.pointold = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointold, pos=(5,3), flag=wx.ALL, border=5)
-        self.regold = wx.SpinCtrl(main_panel, -1, value='55')
+        self.regold = wx.SpinCtrl(main_panel, -1, value='0')
         self.regold.SetRange(35, 100)
         self.regold.SetMinSize((60, -1))
         mp_sizer.Add(self.regold, pos=(5,4), flag=wx.ALL, border=5)
@@ -163,7 +181,8 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valf, pos=(6,2), flag=wx.ALL, border=5)
         self.pointf = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointf, pos=(6,3), flag=wx.ALL, border=5)
-        self.regf = wx.SpinCtrl(main_panel, -1, value='8')
+        self.regf = wx.SpinCtrl(main_panel, -1, value='0')
+        self.regf.SetRange(6, 21)
         self.regf.SetMinSize((60, -1))
         self.regf.SetRange(1, 30)
         mp_sizer.Add(self.regf, pos=(6,4), flag=wx.ALL, border=5)
@@ -196,14 +215,6 @@ class Main_Frame(wx.Frame):
 
         self.reset = wx.Button(main_panel, -1, "Reset")
         mp_sizer.Add(self.reset, pos=(10,2), flag=wx.ALL|wx.ALIGN_RIGHT, border=5)
-
-
-
-
-
-
-
-
 
         main_panel.SetSizer(mp_sizer)
 
