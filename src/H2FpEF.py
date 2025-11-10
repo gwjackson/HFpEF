@@ -1,6 +1,24 @@
 import webbrowser
 from collections import namedtuple
+from dataclasses import dataclass
+from typing import Tuple
+
 import wx
+
+# a dataclass to store, row metadata and user selections
+@dataclass
+class H2Fpdata():
+    key: str
+    clivar: str
+    vardescrip: str
+    pointval: int
+    std_range: Tuple[int, int]
+    ckboxname: str
+    ckboxval: bool
+    regname: str
+    regval: float
+    userreg: str
+
 
 
 class Main_Frame(wx.Frame):
@@ -28,10 +46,34 @@ class Main_Frame(wx.Frame):
             'pointold'  : screen_data(1, 0.0451129471272832, '41 - 79', 'E'),
             'pointf'    : screen_data(1, 0.0858634402456586, '6 - 21', 'F'),
         }
+
+
+        # not done yet but may use the metadata to automate the build of the initial GUI rows :-)
+        self.BMI = H2Fpdata(key="H2", clivar="Heavy", vardescrip='Body mass index > 30 kg/m**2',
+                            pointval=2, std_range=(22.8, 40.4), ckboxname='pointheavy',
+                            ckboxval='False', regname='regheavy', userreg='0', regval=0.130730156015681 )
+        self.HTN = H2Fpdata(key='H2', clivar='Hypertension', vardescrip='2 or more antihypertensive medicines',
+                            pointval='1', std_range=(2,), ckboxname='pointerhtn',
+                            ckboxval='False', regname='reghtn', userreg='0', regval=0 )
+        self.AF = H2Fpdata(key='F', clivar='Atrial Fibrillation', vardescrip='Paroxysmal or Persistent',
+                            pointval='3', std_range=(0,1), ckboxname="pointhtn",
+                            ckboxval='False', regname='regaf', userreg=False, regval=1.69968057294513)
+        self.PH = H2Fpdata(key='P', clivar='Pulmonary Hypertension',
+                           vardescrip='Doppler Echocardiographic estimated Pulmonary Artery Systolic Pressure > 35mmHg',
+                            pointval='1', std_range=(25,50), ckboxname='pointph',
+                            ckboxval='False', regname='regph', userreg='0', regval=0.051963758732548)
+        self.Elder = H2Fpdata(key='E', clivar='Elder', vardescrip='Age > 60 years',
+                            pointval='1', std_range=(41, 79), ckboxname='pointold',
+                            ckboxval='False', regname='regold', userreg='0', regval=0.0451129471272832)
+        self.FP = H2Fpdata(key='F', clivar='Filling Pressure', vardescrip='Doppler Echocardiographic E/e` > 9',
+                            pointval='1', std_range=(6,21), ckboxname='pointf',
+                            ckboxval='False', regname='regf', userreg='0', regval=0.0858634402456586)
+
+
+
         self.create_menu()
         self.CreateStatusBar()
         self.create_main_panel()
-
 
     def create_menu(self):
         """
@@ -123,7 +165,6 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.pointheavy, pos=(1,3), flag=wx.ALL, border=5)
         self.regheavy = wx.SpinCtrl(main_panel, -1, value='0')
         self.regheavy.SetMinSize((60,-1))
-        self.regheavy.SetRange(15, 50)
         mp_sizer.Add(self.regheavy, pos=(1,4), flag=wx.ALL, border=5)
 
         self.cvhtn = wx.StaticText(main_panel, label='Hypertension')
@@ -157,7 +198,6 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.pointph, pos=(4,3), flag=wx.ALL, border=5)
         self.regph = wx.SpinCtrl(main_panel, -1, value='0')
         self.regph.SetMinSize((60,-1))
-        self.regph.SetRange(20, 60)
         mp_sizer.Add(self.regph, pos=(4,4), flag=wx.ALL, border=5)
 
         self.keyold = wx.StaticText(main_panel, label='E')
@@ -169,7 +209,6 @@ class Main_Frame(wx.Frame):
         self.pointold = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointold, pos=(5,3), flag=wx.ALL, border=5)
         self.regold = wx.SpinCtrl(main_panel, -1, value='0')
-        self.regold.SetRange(35, 100)
         self.regold.SetMinSize((60, -1))
         mp_sizer.Add(self.regold, pos=(5,4), flag=wx.ALL, border=5)
 
@@ -182,18 +221,16 @@ class Main_Frame(wx.Frame):
         self.pointf = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointf, pos=(6,3), flag=wx.ALL, border=5)
         self.regf = wx.SpinCtrl(main_panel, -1, value='0')
-        self.regf.SetRange(6, 21)
         self.regf.SetMinSize((60, -1))
-        self.regf.SetRange(1, 30)
         mp_sizer.Add(self.regf, pos=(6,4), flag=wx.ALL, border=5)
 
         # score total rows
-        self.pntscore = wx.StaticText(main_panel, label='Point - Score')
+        self.pntscore = wx.StaticText(main_panel, label='Point - Score: 0 - 9')
         mp_sizer.Add(self.pntscore, pos=(7, 2), flag=wx.ALL | wx.ALIGN_RIGHT, border=5)
         self.pntvalue = wx.StaticText(main_panel, label='0 - 9')
         mp_sizer.Add(self.pntvalue, pos=(7, 3), flag=wx.ALL, border=5)
 
-        self.regscore = wx.StaticText(main_panel, label='Regression - Score')
+        self.regscore = wx.StaticText(main_panel, label='Regression - Score: 0.0 - 1.0')
         mp_sizer.Add(self.regscore, pos=(8, 2), flag=wx.ALL | wx.ALIGN_RIGHT, border=5)
         self.regvalue = wx.StaticText(main_panel, label='0.0 - 1.0')
         mp_sizer.Add(self.regvalue, pos=(8, 4), flag=wx.ALL, border=5)
