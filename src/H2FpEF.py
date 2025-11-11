@@ -270,6 +270,16 @@ class Main_Frame(wx.Frame):
         cb = event.GetEventObject()
         name = cb.GetName()
 
+    # helper function to get the value of a checkbox
+    def statckbx(self, checkboxname):
+        ckbx = getattr(self, checkboxname, None)
+        if isinstance(ckbx, wx.CheckBox):
+            is_checked = ckbx.GetValue()
+            print(f'{checkboxname} is checked {is_checked}')
+            return is_checked
+
+
+
     def calc_points(self, event):
         """
         Iterate through the datarows adding up the points and calculate the scoree
@@ -280,6 +290,14 @@ class Main_Frame(wx.Frame):
 
         for name, datapoint in self.datarows.items():
             print(f'{name}: {datapoint.pointval}')
+            self.statckbx(datapoint.ckboxname)
+            pointsscore += int(datapoint.pointval)
+
+        print(f'Total points: {pointsscore}')
+
+        self.pntvalue.SetLabel(str(pointsscore))
+
+        return pointsscore
 
 
 
