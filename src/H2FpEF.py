@@ -48,11 +48,11 @@ class Main_Frame(wx.Frame):
                             userreg='0', regval=0.130730156015681,name='BMI',)
 
         self.HTN = H2Fpdata(key='H2', clivar='Hypertension', vardescrip='2 or more antihypertensive medicines',
-                            pointval='1', std_range=(2,), ckboxname='pointerhtn',
+                            pointval='1', std_range=(2,), ckboxname='pointhtn',
                             ckboxval='False', regname='reghtn', userreg='0', regval=0, name='HTN')
 
         self.AF = H2Fpdata(key='F', clivar='Atrial Fibrillation', vardescrip='Paroxysmal or Persistent',
-                            pointval='3', std_range=(0,1), ckboxname="pointhtn", ckboxval='False', regname='regaf',
+                            pointval='3', std_range=(0,1), ckboxname="pointaf", ckboxval='False', regname='regaf',
                            userreg=False, regval=1.69968057294513, name='AF')
 
         self.PH = H2Fpdata(key='P', clivar='Pulmonary Hypertension',
@@ -266,38 +266,42 @@ class Main_Frame(wx.Frame):
         else:
             self.regaf.SetLabel("No A. Fib")
 
-    def on_check(self, event):
-        cb = event.GetEventObject()
-        name = cb.GetName()
 
-    # helper function to get the value of a checkbox
-    def statckbx(self, checkboxname):
+
+    def statckbx(self, checkboxname) -> bool:
+        """helper function to get the value of a checkbox - calc_points function
+        it returns a bool True / False - depending onn if the checkbox is checked or unchecked
+        the checkboxes are unchecked by default and on reset
+        -
+        :param checkboxname:
+        :return: bool
+        """
         ckbx = getattr(self, checkboxname, None)
         if isinstance(ckbx, wx.CheckBox):
             is_checked = ckbx.GetValue()
-            print(f'{checkboxname} is checked {is_checked}')
             return is_checked
-
 
 
     def calc_points(self, event):
         """
-        Iterate through the datarows adding up the points and calculate the scoree
-        :param event:
+        Iterate through the datarows adding up the points and calculate the score
+        :param event: from Points Calculate button
         :return: the points calculated / score
+        name is the Key for the dict datarows and datapoint is the dataclass H2pdata data
         """
-        pointsscore = 0
+        pointscore = 0
 
         for name, datapoint in self.datarows.items():
             print(f'{name}: {datapoint.pointval}')
-            self.statckbx(datapoint.ckboxname)
-            pointsscore += int(datapoint.pointval)
 
-        print(f'Total points: {pointsscore}')
+            if self.statckbx(datapoint.ckboxname):
+                pointscore += int(datapoint.pointval)
 
-        self.pntvalue.SetLabel(str(pointsscore))
+        print(f'Total points: {pointscore}')
 
-        return pointsscore
+        self.pntvalue.SetLabel(str(pointscore))
+
+        return pointscore
 
 
 
