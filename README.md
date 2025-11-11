@@ -32,3 +32,5 @@ Dependencies:
 
 For now the only dependencies are; Python >= 3.13 and wxPython
 
+Comments / suggestions ae appreciated
+
