@@ -13,7 +13,7 @@ class H2Fpdata():
     clivar: str
     vardescrip: str
     pointval: int
-    std_range: Tuple[int, int]
+    std_range: Tuple[int, int] | str
     ckboxname: str
     ckboxval: bool
     regname: str
@@ -47,12 +47,14 @@ class Main_Frame(wx.Frame):
                             pointval=2, std_range=(22.8, 40.4), ckboxname = 'pointheavy', ckboxval='False', regname='regheavy',
                             userreg='0', regval=0.130730156015681,name='BMI',)
 
+        # had to get a little tricky here as std_range expects 2 values so :-)
         self.HTN = H2Fpdata(key='H2', clivar='Hypertension', vardescrip='2 or more antihypertensive medicines',
-                            pointval='1', std_range=(2,), ckboxname='pointhtn',
+                            pointval='1', ckboxname='pointhtn', std_range=('Not', 'Applicable'),
                             ckboxval='False', regname='reghtn', userreg='0', regval=0, name='HTN')
 
+
         self.AF = H2Fpdata(key='F', clivar='Atrial Fibrillation', vardescrip='Paroxysmal or Persistent',
-                            pointval='3', std_range=(0,1), ckboxname="pointaf", ckboxval='False', regname='regaf',
+                            pointval='3', std_range=('Toggle for ', 'present or not'), ckboxname="pointaf", ckboxval='False', regname='regaf',
                            userreg=False, regval=1.69968057294513, name='AF')
 
         self.PH = H2Fpdata(key='P', clivar='Pulmonary Hypertension',
@@ -169,6 +171,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.pointheavy, pos=(1,3), flag=wx.ALL, border=5)
         self.regheavy = wx.SpinCtrl(main_panel, -1, value='0')
         self.regheavy.SetMinSize((60,-1))
+        self.regheavy.SetToolTip(self.regValToolTip('BMI'))
         mp_sizer.Add(self.regheavy, pos=(1,4), flag=wx.ALL, border=5)
 
         self.cvhtn = wx.StaticText(main_panel, label='Hypertension')
@@ -178,6 +181,7 @@ class Main_Frame(wx.Frame):
         self.pointhtn = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointhtn, pos=(2,3), flag=wx.ALL, border=5)
         self.reghtn = wx.StaticText(main_panel, label='NA')
+        self.reghtn.SetToolTip(self.regValToolTip('HTN'))
         mp_sizer.Add(self.reghtn, pos=(2,4), flag=wx.ALL, border=5)
 
         self.keyaf = wx.StaticText(main_panel, label='F')
@@ -189,6 +193,7 @@ class Main_Frame(wx.Frame):
         self.pointaf = wx.CheckBox(main_panel, -1, label='3')
         mp_sizer.Add(self.pointaf, pos=(3,3), flag=wx.ALL, border=5)
         self.regaf = wx.ToggleButton(main_panel, -1, label='Toggle Me')
+        self.regaf.SetToolTip(self.regValToolTip('AF'))
         self.regaf.Bind(wx.EVT_TOGGLEBUTTON, self.regaf_on_toggle)
         mp_sizer.Add(self.regaf, pos=(3,4), flag=wx.ALL, border=5)
 
@@ -202,6 +207,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.pointph, pos=(4,3), flag=wx.ALL, border=5)
         self.regph = wx.SpinCtrl(main_panel, -1, value='0')
         self.regph.SetMinSize((60,-1))
+        self.regph.SetToolTip(self.regValToolTip('PH'))
         mp_sizer.Add(self.regph, pos=(4,4), flag=wx.ALL, border=5)
 
         self.keyold = wx.StaticText(main_panel, label='E')
@@ -214,6 +220,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.pointold, pos=(5,3), flag=wx.ALL, border=5)
         self.regold = wx.SpinCtrl(main_panel, -1, value='0')
         self.regold.SetMinSize((60, -1))
+        self.regold.SetToolTip(self.regValToolTip('Elder'))
         mp_sizer.Add(self.regold, pos=(5,4), flag=wx.ALL, border=5)
 
         self.keyf = wx.StaticText(main_panel, label='F')
@@ -226,6 +233,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.pointf, pos=(6,3), flag=wx.ALL, border=5)
         self.regf = wx.SpinCtrl(main_panel, -1, value='0')
         self.regf.SetMinSize((60, -1))
+        self.regf.SetToolTip(self.regValToolTip('FP'))
         mp_sizer.Add(self.regf, pos=(6,4), flag=wx.ALL, border=5)
 
         # score total rows
@@ -266,6 +274,15 @@ class Main_Frame(wx.Frame):
         else:
             self.regaf.SetLabel("No A. Fib")
 
+    def regValToolTip(self, name) -> str:
+        """
+        helper function to generate the tooltips for each of the regression data entry controls
+        :param name: of the datacalss H2pdata element
+        :return: str - The range of values in the study population for this clinical element was from x to y
+        """
+        x, y = self.datarows[name].std_range
+        return f"The range of values in the study population for this clinical element was from {x} to {y}"
+
 
 
     def statckbx(self, checkboxname) -> bool:
@@ -292,19 +309,11 @@ class Main_Frame(wx.Frame):
         pointscore = 0
 
         for name, datapoint in self.datarows.items():
-            print(f'{name}: {datapoint.pointval}')
-
             if self.statckbx(datapoint.ckboxname):
                 pointscore += int(datapoint.pointval)
-
         print(f'Total points: {pointscore}')
-
         self.pntvalue.SetLabel(str(pointscore))
-
         return pointscore
-
-
-
 
 
 
