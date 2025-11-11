@@ -1,6 +1,7 @@
 import webbrowser
 from collections import namedtuple
 from dataclasses import dataclass
+from operator import itemgetter
 from typing import Tuple
 
 import wx
@@ -18,6 +19,10 @@ class H2Fpdata():
     regname: str
     regval: float
     userreg: str
+    name: str
+    #ctrltype: str
+    #ctrlname: str
+
 
 
 
@@ -34,42 +39,41 @@ class Main_Frame(wx.Frame):
 
 
     def __init__(self):
-        super().__init__(None, title='H2FpEF - risk calculator', size=(600, 700), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
+        super().__init__(None, title='H2FpEF - risk calculator  (patients with EF >= 50%)', size=(600, 700), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
 
         # table data
-        screen_data = namedtuple('ckbox',['points', 'reg_value', 'std_range', 'row_lable'])
-        tb_date = {
-            'pointheavy': screen_data(2, 0.130730156015681, '22.5 - 40.4', 'H2'),
-            'pointhtn'  : screen_data(1, 0, '22.5 - 40.4', 'H2'),
-            'pointaf'   : screen_data(3, 1.69968057294513, '0 - 1', 'F'),
-            'pointph'   : screen_data(1, 0.051963758732548, '25 - 50', 'P'),
-            'pointold'  : screen_data(1, 0.0451129471272832, '41 - 79', 'E'),
-            'pointf'    : screen_data(1, 0.0858634402456586, '6 - 21', 'F'),
-        }
-
-
         # not done yet but may use the metadata to automate the build of the initial GUI rows :-)
         self.BMI = H2Fpdata(key="H2", clivar="Heavy", vardescrip='Body mass index > 30 kg/m**2',
-                            pointval=2, std_range=(22.8, 40.4), ckboxname='pointheavy',
-                            ckboxval='False', regname='regheavy', userreg='0', regval=0.130730156015681 )
+                            pointval=2, std_range=(22.8, 40.4), ckboxname = 'pointheavy', ckboxval='False', regname='regheavy',
+                            userreg='0', regval=0.130730156015681,name='BMI',)
+
         self.HTN = H2Fpdata(key='H2', clivar='Hypertension', vardescrip='2 or more antihypertensive medicines',
                             pointval='1', std_range=(2,), ckboxname='pointerhtn',
-                            ckboxval='False', regname='reghtn', userreg='0', regval=0 )
+                            ckboxval='False', regname='reghtn', userreg='0', regval=0, name='HTN')
+
         self.AF = H2Fpdata(key='F', clivar='Atrial Fibrillation', vardescrip='Paroxysmal or Persistent',
-                            pointval='3', std_range=(0,1), ckboxname="pointhtn",
-                            ckboxval='False', regname='regaf', userreg=False, regval=1.69968057294513)
+                            pointval='3', std_range=(0,1), ckboxname="pointhtn", ckboxval='False', regname='regaf',
+                           userreg=False, regval=1.69968057294513, name='AF')
+
         self.PH = H2Fpdata(key='P', clivar='Pulmonary Hypertension',
                            vardescrip='Doppler Echocardiographic estimated Pulmonary Artery Systolic Pressure > 35mmHg',
                             pointval='1', std_range=(25,50), ckboxname='pointph',
-                            ckboxval='False', regname='regph', userreg='0', regval=0.051963758732548)
+                            ckboxval='False', regname='regph', userreg='0', regval=0.051963758732548, name='PH')
+
         self.Elder = H2Fpdata(key='E', clivar='Elder', vardescrip='Age > 60 years',
                             pointval='1', std_range=(41, 79), ckboxname='pointold',
-                            ckboxval='False', regname='regold', userreg='0', regval=0.0451129471272832)
+                            ckboxval='False', regname='regold', userreg='0', regval=0.0451129471272832, name='Elder')
+
         self.FP = H2Fpdata(key='F', clivar='Filling Pressure', vardescrip='Doppler Echocardiographic E/e` > 9',
                             pointval='1', std_range=(6,21), ckboxname='pointf',
-                            ckboxval='False', regname='regf', userreg='0', regval=0.0858634402456586)
+                            ckboxval='False', regname='regf', userreg='0', regval=0.0858634402456586, name='FP')
 
-
+        # now to put these into a dict so I can iterate threw for calculating scores, resets, validation
+        # key will be a hash of the string name and item will beh the dataclass
+        self.datarows = {
+            'BMI': self.BMI, 'HTN': self.HTN, 'AF': self.AF,'PH': self.PH, 'Elder': self.Elder, 'FP': self.FP
+        }
+        #print(datarows)
 
         self.create_menu()
         self.CreateStatusBar()
@@ -245,6 +249,7 @@ class Main_Frame(wx.Frame):
 
         #add cal / reset buttons
         self.pointcalc = wx.Button(main_panel, -1, "Points Calculate")
+        self.pointcalc.Bind(wx.EVT_BUTTON, self.calc_points)
         mp_sizer.Add(self.pointcalc, pos=(10,1), flag=wx.ALL, border=5)
 
         self.regcalc = wx.Button(main_panel, -1, "Regression Calculate")
@@ -260,6 +265,21 @@ class Main_Frame(wx.Frame):
             self.regaf.SetLabel("Has A. Fib")
         else:
             self.regaf.SetLabel("No A. Fib")
+
+    def on_check(self, event):
+        cb = event.GetEventObject()
+        name = cb.GetName()
+
+    def calc_points(self, event):
+        """
+        Iterate through the datarows adding up the points and calculate the scoree
+        :param event:
+        :return: the points calculated / score
+        """
+        pointsscore = 0
+
+        for name, datapoint in self.datarows.items():
+            print(f'{name}: {datapoint.pointval}')
 
 
 
