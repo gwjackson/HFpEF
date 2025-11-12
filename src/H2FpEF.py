@@ -20,7 +20,7 @@ class H2Fpdata():
     regval: float
     userreg: str
     name: str
-    #ctrltype: str
+    regctrltype: str
     #ctrlname: str
 
 
@@ -45,29 +45,29 @@ class Main_Frame(wx.Frame):
         # not done yet but may use the metadata to automate the build of the initial GUI rows :-)
         self.BMI = H2Fpdata(key="H2", clivar="Heavy", vardescrip='Body mass index > 30 kg/m**2',
                             pointval=2, std_range=(22.8, 40.4), ckboxname = 'pointheavy', ckboxval='False', regname='regheavy',
-                            userreg='0', regval=0.130730156015681,name='BMI',)
+                            userreg='0', regval=0.130730156015681,name='BMI', regctrltype="SpinCtrl")
 
         # had to get a little tricky here as std_range expects 2 values so :-)
         self.HTN = H2Fpdata(key='H2', clivar='Hypertension', vardescrip='2 or more antihypertensive medicines',
                             pointval='1', ckboxname='pointhtn', std_range=('Not', 'Applicable'),
-                            ckboxval='False', regname='reghtn', userreg='0', regval=0, name='HTN')
+                            ckboxval='False', regname='reghtn', userreg='0', regval=0, name='HTN', regctrltype='StaticTxt')
 
 
         self.AF = H2Fpdata(key='F', clivar='Atrial Fibrillation', vardescrip='Paroxysmal or Persistent',
-                            pointval='3', std_range=('Toggle for ', 'present or not'), ckboxname="pointaf", ckboxval='False', regname='regaf',
-                           userreg=False, regval=1.69968057294513, name='AF')
+                            pointval='3', std_range=('Toggle for ', 'present or not'), ckboxname="pointaf", ckboxval='False',
+                           regname='regaf', userreg=False, regval=1.69968057294513, name='AF', regctrltype='ToggleButton')
 
         self.PH = H2Fpdata(key='P', clivar='Pulmonary Hypertension',
                            vardescrip='Doppler Echocardiographic estimated Pulmonary Artery Systolic Pressure > 35mmHg',
-                            pointval='1', std_range=(25,50), ckboxname='pointph',
+                            pointval='1', std_range=(25,50), ckboxname='pointph', regctrltype= 'SpinCtrl',
                             ckboxval='False', regname='regph', userreg='0', regval=0.051963758732548, name='PH')
 
         self.Elder = H2Fpdata(key='E', clivar='Elder', vardescrip='Age > 60 years',
-                            pointval='1', std_range=(41, 79), ckboxname='pointold',
+                            pointval='1', std_range=(41, 79), ckboxname='pointold', regctrltype='SpinCtrl',
                             ckboxval='False', regname='regold', userreg='0', regval=0.0451129471272832, name='Elder')
 
         self.FP = H2Fpdata(key='F', clivar='Filling Pressure', vardescrip='Doppler Echocardiographic E/e` > 9',
-                            pointval='1', std_range=(6,21), ckboxname='pointf',
+                            pointval='1', std_range=(6,21), ckboxname='pointf', regctrltype='SpinCtrl',
                             ckboxval='False', regname='regf', userreg='0', regval=0.0858634402456586, name='FP')
 
         # now to put these into a dict so I can iterate threw for calculating scores, resets, validation
@@ -261,6 +261,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.pointcalc, pos=(10,1), flag=wx.ALL, border=5)
 
         self.regcalc = wx.Button(main_panel, -1, "Regression Calculate")
+        self.regcalc.Bind(wx.EVT_BUTTON, self.reg_calc_score)
         mp_sizer.Add(self.regcalc, pos=(11,1), flag=wx.ALL, border=5)
 
         self.reset = wx.Button(main_panel, -1, "Reset")
@@ -271,19 +272,21 @@ class Main_Frame(wx.Frame):
     def regaf_on_toggle(self, event):
         if self.regaf.GetValue():
             self.regaf.SetLabel("Has A. Fib")
+            self.userreg = 1
         else:
             self.regaf.SetLabel("No A. Fib")
+            self.userreg = 0
 
     def regValToolTip(self, name) -> str:
         """
         helper function to generate the tooltips for each of the regression data entry controls
-        :param name: of the datacalss H2pdata element
+        :param name: of the dataclass H2pdata element
         :return: str - The range of values in the study population for this clinical element was from x to y
         """
         x, y = self.datarows[name].std_range
         return f"The range of values in the study population for this clinical element was from {x} to {y}"
 
-
+    ########### score for points screening
 
     def statckbx(self, checkboxname) -> bool:
         """helper function to get the value of a checkbox - calc_points function
@@ -311,9 +314,66 @@ class Main_Frame(wx.Frame):
         for name, datapoint in self.datarows.items():
             if self.statckbx(datapoint.ckboxname):
                 pointscore += int(datapoint.pointval)
-        print(f'Total points: {pointscore}')
         self.pntvalue.SetLabel(str(pointscore))
         return pointscore
+
+    ##########  calc using regression formula
+
+    def reg_calc_score(self, event):
+        """
+        Again iterate through the GUI via datarows, validate the user inputs and feedback / updated as needed
+        compounded by 3 different ctrls, SpinCtrl (may need to change to SpinCtrlDouble
+        for now just using the ranges used by the study but will have to open up possible values (but compatible
+        with life!)
+        :param event: button event
+        :return: regressionscore
+        The regression equation from the 2018 article; a grip for me is that none of data point has more then
+        3 significant digits while equation circa 18 digits?  See the excel/calc spreadsheet
+
+        Probability of HFpEF = G2 / (1 + G2) * 100
+
+        G2 = 2.71828182845904^F2 (where F2 is the Logs odds)
+        F2 = =-9.19174463966566
+            + 0.0451129471272832*C4
+            + 0.130730156015681*C1
+            + 0.0858634402456586*C5
+            + 0.051963758732548*C3
+            + 1.69968057294513*C2
+
+        C1 - BMI in Kg/m^2
+        C2 - A. Fib a 0 if present or 1 if present
+        C3 - PASP in mmHg
+        C4 - age in years
+        C5 - Filling pressure (E/e`)
+        But all these vales on the the dataclass for each element - regvalue
+
+            regdata = datapoint.regval
+            regctrl = datapoint.regctrltype
+            print( regdata, regctrl)
+
+        """
+
+        for name, datapoint in self.datarows.items():
+            rectrl = datapoint.regctrltype
+            match rectrl:
+                case 'SpinCtrl':
+                    print(datapoint.regval, datapoint.userreg)
+                case 'TobbleButton':
+                    print ('Toggle')
+                case 'StaticTxt':
+                    print ('Text')
+                case _:
+                    print("missed something")
+
+
+
+    def helptoggle(self):
+        """
+        helper function  for the ToggleButton
+        :return:
+        """
+        pass
+
 
 
 
