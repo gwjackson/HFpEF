@@ -45,7 +45,7 @@ class Main_Frame(wx.Frame):
         # not done yet but may use the metadata to automate the build of the initial GUI rows :-)
         self.BMI = H2Fpdata(key="H2", clivar="Heavy", vardescrip='Body mass index > 30 kg/m**2',
                             pointval=2, std_range=(22.8, 40.4), ckboxname = 'pointheavy', ckboxval='False', regname='regheavy',
-                            userreg='0', regval=0.130730156015681,name='BMI', regctrltype="SpinCtrl")
+                            userreg='0', regval=0.130730156015681,name='BMI', regctrltype="SpinCtrlDouble")
 
         # had to get a little tricky here as std_range expects 2 values so :-)
         self.HTN = H2Fpdata(key='H2', clivar='Hypertension', vardescrip='2 or more antihypertensive medicines',
@@ -59,15 +59,15 @@ class Main_Frame(wx.Frame):
 
         self.PH = H2Fpdata(key='P', clivar='Pulmonary Hypertension',
                            vardescrip='Doppler Echocardiographic estimated Pulmonary Artery Systolic Pressure > 35mmHg',
-                            pointval='1', std_range=(25,50), ckboxname='pointph', regctrltype= 'SpinCtrl',
+                            pointval='1', std_range=(25,50), ckboxname='pointph', regctrltype= 'SpinCtrlDouble',
                             ckboxval='False', regname='regph', userreg='0', regval=0.051963758732548, name='PH')
 
         self.Elder = H2Fpdata(key='E', clivar='Elder', vardescrip='Age > 60 years',
-                            pointval='1', std_range=(41, 79), ckboxname='pointold', regctrltype='SpinCtrl',
+                            pointval='1', std_range=(41, 79), ckboxname='pointold', regctrltype='SpinCtrlDouble',
                             ckboxval='False', regname='regold', userreg='0', regval=0.0451129471272832, name='Elder')
 
         self.FP = H2Fpdata(key='F', clivar='Filling Pressure', vardescrip='Doppler Echocardiographic E/e` > 9',
-                            pointval='1', std_range=(6,21), ckboxname='pointf', regctrltype='SpinCtrl',
+                            pointval='1', std_range=(6,21), ckboxname='pointf', regctrltype='SpinCtrlDouble',
                             ckboxval='False', regname='regf', userreg='0', regval=0.0858634402456586, name='FP')
 
         # now to put these into a dict so I can iterate threw for calculating scores, resets, validation
@@ -169,8 +169,9 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valheavy, pos=(1,2), flag=wx.ALL, border=5)
         self.pointheavy = wx.CheckBox(main_panel, -1, label='2')
         mp_sizer.Add(self.pointheavy, pos=(1,3), flag=wx.ALL, border=5)
-        self.regheavy = wx.SpinCtrl(main_panel, -1, value='0')
+        self.regheavy = wx.SpinCtrlDouble(main_panel, -1, value='0')
         self.regheavy.SetMinSize((60,-1))
+        self.regheavy.SetDigits(2)
         self.regheavy.SetToolTip(self.regValToolTip('BMI'))
         mp_sizer.Add(self.regheavy, pos=(1,4), flag=wx.ALL, border=5)
 
@@ -205,8 +206,9 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valph, pos=(4,2), flag=wx.ALL, border=5)
         self.pointph = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointph, pos=(4,3), flag=wx.ALL, border=5)
-        self.regph = wx.SpinCtrl(main_panel, -1, value='0')
+        self.regph = wx.SpinCtrlDouble(main_panel, -1, value='0')
         self.regph.SetMinSize((60,-1))
+        self.regph.SetDigits(2)
         self.regph.SetToolTip(self.regValToolTip('PH'))
         mp_sizer.Add(self.regph, pos=(4,4), flag=wx.ALL, border=5)
 
@@ -218,8 +220,9 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valold, pos=(5,2), flag=wx.ALL, border=5)
         self.pointold = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointold, pos=(5,3), flag=wx.ALL, border=5)
-        self.regold = wx.SpinCtrl(main_panel, -1, value='0')
+        self.regold = wx.SpinCtrlDouble(main_panel, -1, value='0')
         self.regold.SetMinSize((60, -1))
+        self.regold.SetDigits(2)
         self.regold.SetToolTip(self.regValToolTip('Elder'))
         mp_sizer.Add(self.regold, pos=(5,4), flag=wx.ALL, border=5)
 
@@ -231,8 +234,9 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valf, pos=(6,2), flag=wx.ALL, border=5)
         self.pointf = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointf, pos=(6,3), flag=wx.ALL, border=5)
-        self.regf = wx.SpinCtrl(main_panel, -1, value='0')
+        self.regf = wx.SpinCtrlDouble(main_panel, -1, value='0')
         self.regf.SetMinSize((60, -1))
+        self.regf.SetDigits(2)
         self.regf.SetToolTip(self.regValToolTip('FP'))
         mp_sizer.Add(self.regf, pos=(6,4), flag=wx.ALL, border=5)
 
@@ -284,7 +288,7 @@ class Main_Frame(wx.Frame):
         :return: str - The range of values in the study population for this clinical element was from x to y
         """
         x, y = self.datarows[name].std_range
-        return f"The range of values in the study population for this clinical element was from {x} to {y}"
+        return f"The range of values in the study population\nfor this clinical element was from {x} to {y}\n(allows 2 decimal digits)"
 
     ########### score for points screening
 
@@ -322,7 +326,7 @@ class Main_Frame(wx.Frame):
     def reg_calc_score(self, event):
         """
         Again iterate through the GUI via datarows, validate the user inputs and feedback / updated as needed
-        compounded by 3 different ctrls, SpinCtrl (may need to change to SpinCtrlDouble
+        compounded by 3 different ctrls, SpinCtrlDouble (may need to change to SpinCtrlDoubleDouble
         for now just using the ranges used by the study but will have to open up possible values (but compatible
         with life!)
         :param event: button event
@@ -351,21 +355,31 @@ class Main_Frame(wx.Frame):
             regctrl = datapoint.regctrltype
             print( regdata, regctrl)
 
+        Have to use the getattr again (see above) seems a bit convoluted, and need to read about this more
         """
-        # have to use the getattr again (see above) seems a bit convoluted, and need to read about this more
         logOdds = -9.19174463966566
         for key, datapoint in self.datarows.items():
             ctrl = getattr(self, datapoint.regname, None)
             if ctrl:
-                if isinstance(ctrl, wx.SpinCtrl):
+                if isinstance(ctrl, wx.SpinCtrlDouble):
                     datapoint.userreg = ctrl.GetValue()
                 elif isinstance(ctrl, wx.ToggleButton):
                     datapoint.userreg = ctrl.GetValue()
                     datapoint.userreg = 1 if datapoint.userreg else 0
                 elif isinstance(ctrl, wx.StaticText):
                     datapoint.userreg = ctrl.GetLabel()
+                    datapoint.userreg = 0
             print(f'{datapoint.regval}  {datapoint.userreg}')
             # add the product of each of these to get the final Log Odds value (F2 in comment above)
+            logOdds += float(datapoint.userreg) * datapoint.regval
+            print(f'{datapoint.userreg:.2f}')
+        print(f'log Odds: {logOdds:.3f}')
+        G2 = 2.71828182845904**logOdds
+        print(f'G2: {G2:.3f}')
+        ProbHFpEF = G2 / (1 + G2) * 100
+        print(f'ProbHFpEF: {ProbHFpEF:.3f}')
+        self.regvalue.SetLabel(f'{ProbHFpEF:.3f}')
+
 
 
 
