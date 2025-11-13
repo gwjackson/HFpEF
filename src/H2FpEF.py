@@ -392,10 +392,10 @@ class Main_Frame(wx.Frame):
                 elif isinstance(ctrl, wx.ToggleButton):
                     ctrl.SetValue(False)
                     ctrl.SetLabel("No A. Fib")
-                elif isinstance(ctrl, wx.CheckBox):
-                    ctrl.SetValue(True)
-        #self.main_panel.Layout()
-        #self.main_panel.Refresh()
+            ctrl = getattr(self, datapoint.ckboxname, None)
+            if ctrl:
+                if isinstance(ctrl, wx.CheckBox):
+                    ctrl.SetValue(False)
 
 
 
