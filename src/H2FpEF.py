@@ -192,7 +192,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.valaf, pos=(3,2), flag=wx.ALL, border=5)
         self.pointaf = wx.CheckBox(main_panel, -1, label='3')
         mp_sizer.Add(self.pointaf, pos=(3,3), flag=wx.ALL, border=5)
-        self.regaf = wx.ToggleButton(main_panel, -1, label='Toggle Me')
+        self.regaf = wx.ToggleButton(main_panel, -1, label='No A. Fib')
         self.regaf.SetToolTip(self.regValToolTip('AF'))
         self.regaf.Bind(wx.EVT_TOGGLEBUTTON, self.regaf_on_toggle)
         mp_sizer.Add(self.regaf, pos=(3,4), flag=wx.ALL, border=5)
@@ -352,28 +352,20 @@ class Main_Frame(wx.Frame):
             print( regdata, regctrl)
 
         """
-
-        for name, datapoint in self.datarows.items():
-            rectrl = datapoint.regctrltype
-            match rectrl:
-                case 'SpinCtrl':
-                    print(datapoint.regval, datapoint.userreg)
-                case 'TobbleButton':
-                    print ('Toggle')
-                case 'StaticTxt':
-                    print ('Text')
-                case _:
-                    print("missed something")
-
-
-
-    def helptoggle(self):
-        """
-        helper function  for the ToggleButton
-        :return:
-        """
-        pass
-
+        # have to use the getattr again (see above) seems a bit convoluted, and need to read about this more
+        logOdds = -9.19174463966566
+        for key, datapoint in self.datarows.items():
+            ctrl = getattr(self, datapoint.regname, None)
+            if ctrl:
+                if isinstance(ctrl, wx.SpinCtrl):
+                    datapoint.userreg = ctrl.GetValue()
+                elif isinstance(ctrl, wx.ToggleButton):
+                    datapoint.userreg = ctrl.GetValue()
+                    datapoint.userreg = 1 if datapoint.userreg else 0
+                elif isinstance(ctrl, wx.StaticText):
+                    datapoint.userreg = ctrl.GetLabel()
+            print(f'{datapoint.regval}  {datapoint.userreg}')
+            # add the product of each of these to get the final Log Odds value (F2 in comment above)
 
 
 
