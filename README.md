@@ -1,7 +1,7 @@
-***H2FpEF***
+# H2FpEF
 
 
-**An app to screen for HFpEF**
+### An app to screen for HFpEF
 
 *And a learning platform for me to practice:*
 
