@@ -230,7 +230,7 @@ class Main_Frame(wx.Frame):
         mp_sizer.Add(self.keyf, pos=(6,0), flag=wx.ALL, border=5)
         self.cvf = wx.StaticText(main_panel, label='Filling Pressure')
         mp_sizer.Add(self.cvf, pos=(6,1), flag=wx.ALL, border=5)
-        self.valf = wx.StaticText(main_panel, label='Doppler Echocardiographic E/e`')
+        self.valf = wx.StaticText(main_panel, label='Doppler Echocardiographic E/e` > 9')
         mp_sizer.Add(self.valf, pos=(6,2), flag=wx.ALL, border=5)
         self.pointf = wx.CheckBox(main_panel, -1, label='1')
         mp_sizer.Add(self.pointf, pos=(6,3), flag=wx.ALL, border=5)
