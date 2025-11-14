@@ -128,20 +128,23 @@ class Main_Frame(wx.Frame):
 
     def on_about(self, event):
 
-        self.html_win = wx.html.HtmlWindow(self,  size=wx.Size(200, 200))
-
+        about_dlg =wx.Dialog(self, title='About H2FpEF', size=(400,400))
+        self.html_win = wx.html.HtmlWindow(about_dlg)
 
         # Use pathlib to locate the HTML file
         self.html_path = Path(__file__).resolve().parent / "test.html"
-        
         # Read and display the HTML content
-        if self.html_path.exists():
-            self.html_win.SetPage(self.html_path.read_text())
-            self.html_win.Show(True)
+        self.html_win.SetPage(self.html_path.read_text())
+        self.html_win.Show()
+
+        btn = wx.Button(about_dlg, wx.ID_OK, label='&OK')
+        about_sizer = wx.BoxSizer(wx.VERTICAL)
+        about_sizer.Add(self.html_win, 1, wx.ALL|wx.EXPAND, 5)
+        about_sizer.Add(btn, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        about_dlg.SetSizer(about_sizer)
+        self.html_win.Show(True)
             #self.html_win.Refresh()
             #self.html_win.Update()
-        else:
-            self.html_win.SetPage("<h2>Error</h2><p>HTML file not found.</p>")
 
         print(self.html_path)
         print(self.html_path.read_text())
