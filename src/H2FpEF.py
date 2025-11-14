@@ -1,10 +1,10 @@
 import webbrowser
-from collections import namedtuple
 from dataclasses import dataclass
 from operator import itemgetter
-from typing import Tuple
-
 import wx
+import wx.html
+from pathlib import Path
+
 
 # a dataclass to store, row metadata and user selections
 @dataclass
@@ -13,7 +13,7 @@ class H2Fpdata():
     clivar: str
     vardescrip: str
     pointval: int
-    std_range: Tuple[int, int] | str
+    std_range: tuple[int, int] | str
     ckboxname: str
     ckboxval: bool
     regname: str
@@ -91,8 +91,8 @@ class Main_Frame(wx.Frame):
         # About Menu
         aboutMenu = wx.Menu()
 
-        help_menu_item = aboutMenu.Append(wx.ID_ANY, '&About', 'About the H2FpEF')
-        self.Bind(wx.EVT_MENU, self.on_help, help_menu_item)
+        about_menu_item = aboutMenu.Append(wx.ID_ANY, '&About', 'About the H2FpEF')
+        self.Bind(wx.EVT_MENU, self.on_about, about_menu_item)
 
         # Citation Menu and Submenu
         citationMenu = wx.Menu()
@@ -126,8 +126,27 @@ class Main_Frame(wx.Frame):
     def on_exit(self, event):
         self.Close()
 
-    def on_help(self, event):
-        pass
+    def on_about(self, event):
+
+        self.html_win = wx.html.HtmlWindow(self,  size=wx.Size(200, 200))
+
+
+        # Use pathlib to locate the HTML file
+        self.html_path = Path(__file__).resolve().parent / "test.html"
+        
+        # Read and display the HTML content
+        if self.html_path.exists():
+            self.html_win.SetPage(self.html_path.read_text())
+            self.html_win.Show(True)
+            #self.html_win.Refresh()
+            #self.html_win.Update()
+        else:
+            self.html_win.SetPage("<h2>Error</h2><p>HTML file not found.</p>")
+
+        print(self.html_path)
+        print(self.html_path.read_text())
+
+        print("got to end")
 
     def on_circulation(self, event):
         url = 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/'
@@ -396,7 +415,6 @@ class Main_Frame(wx.Frame):
             if ctrl:
                 if isinstance(ctrl, wx.CheckBox):
                     ctrl.SetValue(False)
-
 
 
 
