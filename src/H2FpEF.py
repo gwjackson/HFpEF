@@ -1,6 +1,5 @@
 import webbrowser
 from dataclasses import dataclass
-from operator import itemgetter
 import wx
 import wx.html
 from pathlib import Path
@@ -128,23 +127,27 @@ class Main_Frame(wx.Frame):
 
     def on_about(self, event):
 
-        about_dlg =wx.Dialog(self, title='About H2FpEF', size=(400,400))
-        self.html_win = wx.html.HtmlWindow(about_dlg)
+        self.about_dlg =wx.Dialog(self, title='About H2FpEF', size=(400,400), style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
+        self.html_win = wx.html.HtmlWindow(self.about_dlg)
 
         # Use pathlib to locate the HTML file
-        self.html_path = Path(__file__).resolve().parent / "test.html"
+        self.html_path = Path(__file__).resolve().parent / "About_text.html"
         # Read and display the HTML content
-        self.html_win.SetPage(self.html_path.read_text())
+        #self.html_win.SetPage(self.html_path.read_text())
+        self.html_win.LoadPage(f'file:About_text.html')
         self.html_win.Show()
 
-        btn = wx.Button(about_dlg, wx.ID_OK, label='&OK')
+        btn = wx.Button(self.about_dlg, wx.ID_OK, label='&OK')
         about_sizer = wx.BoxSizer(wx.VERTICAL)
         about_sizer.Add(self.html_win, 1, wx.ALL|wx.EXPAND, 5)
         about_sizer.Add(btn, 0, wx.ALIGN_CENTER|wx.ALL, 5)
-        about_dlg.SetSizer(about_sizer)
+        self.about_dlg.SetSizer(about_sizer)
         self.html_win.Show(True)
             #self.html_win.Refresh()
             #self.html_win.Update()
+        self.about_dlg.ShowModal()
+        self.about_dlg.Destroy()
+
 
         print(self.html_path)
         print(self.html_path.read_text())
