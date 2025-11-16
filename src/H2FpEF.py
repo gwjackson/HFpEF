@@ -127,7 +127,8 @@ class Main_Frame(wx.Frame):
 
     def on_about(self, event):
 
-        self.about_dlg =wx.Dialog(self, title='About H2FpEF', size=(400,400), style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
+        self.about_dlg =wx.Dialog(self, title='About H2FpEF', size=wx.Size(800,600), style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
+        self.about_dlg.SetSize((800,600))
         self.html_win = wx.html.HtmlWindow(self.about_dlg)
 
         # Use pathlib to locate the HTML file
