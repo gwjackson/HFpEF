@@ -10,6 +10,7 @@
 * Sphinx
 * GIT
 * tests
+* refactoring
 * packaging
 * languages
 * validators
