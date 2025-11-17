@@ -99,12 +99,17 @@ class Main_Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_circulation, cit_circulation_item)
         cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'AAFP 2025', 'AAFP journal 2025')
         self.Bind(wx.EVT_MENU, self.on_aafp, cit_circulation_item)
-
         aboutMenu.AppendSubMenu(citationMenu, '&Citation')
 
+        # License menu
+        lis_menu_item = aboutMenu.Append(wx.ID_ANY, 'License', 'Application License / Disclaimer')
+        self.Bind(wx.EVT_MENU, self.on_license, lis_menu_item)
+
+        aboutMenu.AppendSeparator()
 
         exit_menu_item = aboutMenu.Append(wx.ID_EXIT, '&Exit', 'Exit / Terminate the application')
         self.Bind(wx.EVT_MENU, self.on_exit, exit_menu_item)
+
 
         menu_bar.Append(aboutMenu, '&About')
 
@@ -120,6 +125,10 @@ class Main_Frame(wx.Frame):
         menu_bar.Append(gdmtMenu, '&GDMT')
 
         self.SetMenuBar(menu_bar)
+
+
+    def on_license(self, event):
+        self.show_html_dialog("MIT_License.html", title="License and Disclaimer", size=(800,450))
 
 
     def on_exit(self, event):
@@ -143,8 +152,14 @@ class Main_Frame(wx.Frame):
         html_path = Path(__file__).resolve().parent / html_filename
         print(html_path)
 
-        # Load the HTML file using a file URI
-        html_win.LoadPage(html_path.as_uri())
+        """
+        not clear why the .as_uri works but seems stable 
+        file:///{html_path}
+        and (html_path.as_uri)  <- old school ? deprecated
+        
+        """
+        html_win.LoadPage(f'file:///{html_path}')
+        #html_win.LoadPage(html_path.as_uri())
 
         # Layout
         btn = wx.Button(dlg, wx.ID_OK, label='&OK')
@@ -158,27 +173,6 @@ class Main_Frame(wx.Frame):
 
     def on_about(self, event):
         self.show_html_dialog("About_text.html", title="About H2FpEF")
-        """  
-        self.about_dlg =wx.Dialog(self, title='About H2FpEF', size=wx.Size(800,600), style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
-        self.about_dlg.SetSize((800,600))
-        self.html_win = wx.html.HtmlWindow(self.about_dlg)
-
-        # Use pathlib to locate the HTML file
-        self.html_path = Path(__file__).resolve().parent / "About_text.html"
-        # Read and display the HTML content
-        #self.html_win.SetPage(self.html_path.read_text())
-        self.html_win.LoadPage(f'file:About_text.html')
-        self.html_win.Show()
-
-        btn = wx.Button(self.about_dlg, wx.ID_OK, label='&OK')
-        about_sizer = wx.BoxSizer(wx.VERTICAL)
-        about_sizer.Add(self.html_win, 1, wx.ALL|wx.EXPAND, 5)
-        about_sizer.Add(btn, 0, wx.ALIGN_CENTER|wx.ALL, 5)
-        self.about_dlg.SetSizer(about_sizer)
-
-        self.about_dlg.ShowModal()
-        self.about_dlg.Destroy()
-        """
 
     def on_circulation(self, event):
         url = 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/'
@@ -189,10 +183,10 @@ class Main_Frame(wx.Frame):
         webbrowser.open(url)
 
     def on_gdmt_gdmt(self, event):
-       pass
+        self.show_html_dialog("GDMT_Tx.html", title='GDMT - Meds / comorbidities', size=(500, 450))
 
     def on_gdmt_sympt(self, event):
-        self.show_html_dialog("Signs_Symptoms.html", title="Signs and Symptoms")
+        self.show_html_dialog("Signs_Symptoms.html", title="Signs and Symptoms", size=(550,600))
 
 
 
@@ -448,6 +442,10 @@ class Main_Frame(wx.Frame):
             if ctrl:
                 if isinstance(ctrl, wx.CheckBox):
                     ctrl.SetValue(False)
+
+        # now clear  the StaticText in the GUI
+        self.pntvalue.SetLabel('0-9')
+        self.regvalue.SetLabel('0-1')
 
 
 
