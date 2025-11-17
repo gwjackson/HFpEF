@@ -125,8 +125,40 @@ class Main_Frame(wx.Frame):
     def on_exit(self, event):
         self.Close()
 
-    def on_about(self, event):
+    def show_html_dialog(self, html_filename, title="HTML Viewer", size=(800,600)):
+        """
+        Helper function to display HTML files as info for the user.
+        It iss called w/the file name w/file to be in the same directory level as the app code
+        and the title of the dialog
+        some_on_event(self.event):
+            show_html_dialog(parent, html_filename, title="HTML Viewer")
+        :param html_filename: name of the HTML file
+        :param title: title of the dialog
+        :param size: defaulted
+        :return: None
+        """
+        dlg = wx.Dialog(self, title=title, size=size, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
 
+        html_win = wx.html.HtmlWindow(dlg)
+        html_path = Path(__file__).resolve().parent / html_filename
+        print(html_path)
+
+        # Load the HTML file using a file URI
+        html_win.LoadPage(html_path.as_uri())
+
+        # Layout
+        btn = wx.Button(dlg, wx.ID_OK, label='&OK')
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(html_win, 1, wx.ALL | wx.EXPAND, 5)
+        sizer.Add(btn, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        dlg.SetSizer(sizer)
+
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def on_about(self, event):
+        self.show_html_dialog("About_text.html", title="About H2FpEF")
+        """  
         self.about_dlg =wx.Dialog(self, title='About H2FpEF', size=wx.Size(800,600), style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.about_dlg.SetSize((800,600))
         self.html_win = wx.html.HtmlWindow(self.about_dlg)
@@ -143,17 +175,10 @@ class Main_Frame(wx.Frame):
         about_sizer.Add(self.html_win, 1, wx.ALL|wx.EXPAND, 5)
         about_sizer.Add(btn, 0, wx.ALIGN_CENTER|wx.ALL, 5)
         self.about_dlg.SetSizer(about_sizer)
-        self.html_win.Show(True)
-            #self.html_win.Refresh()
-            #self.html_win.Update()
+
         self.about_dlg.ShowModal()
         self.about_dlg.Destroy()
-
-
-        print(self.html_path)
-        print(self.html_path.read_text())
-
-        print("got to end")
+        """
 
     def on_circulation(self, event):
         url = 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/'
@@ -167,7 +192,8 @@ class Main_Frame(wx.Frame):
        pass
 
     def on_gdmt_sympt(self, event):
-        pass
+        self.show_html_dialog("Signs_Symptoms.html", title="Signs and Symptoms")
+
 
 
     # and now some sizers for the mainpanel plan is a 5 column x 10 row gridbagsizer
