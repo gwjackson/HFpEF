@@ -52,7 +52,7 @@ class Main_Frame(wx.Frame):
                             ckboxval='False', regname='reghtn', userreg='0', regval=0, name='HTN', regctrltype='StaticTxt')
 
 
-        self.AF = H2Fpdata(key='F', clivar='Atrial Fibrillation', vardescrip='Paroxysmal or Persistent',
+        self.AF = H2Fpdata(key='F', clivar='Atrial Fibrillation', vardescrip='Paroxysmal or Persistent A. Fib',
                             pointval='3', std_range=('Toggle for ', 'present or not'), ckboxname="pointaf", ckboxval='False',
                            regname='regaf', userreg=False, regval=1.69968057294513, name='AF', regctrltype='ToggleButton')
 
@@ -235,7 +235,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.keyaf, pos=(3,0), flag=wx.ALL, border=5)
         self.cvaf = wx.StaticText(self.main_panel, label='Atrial Fibrillation')
         self.mp_sizer.Add(self.cvaf, pos=(3,1), flag=wx.ALL, border=5)
-        self.valaf = wx.StaticText(self.main_panel, label='Paroxysmal or Persistent')
+        self.valaf = wx.StaticText(self.main_panel, label='Paroxysmal or Persistent A. Fib')
         self.mp_sizer.Add(self.valaf, pos=(3,2), flag=wx.ALL, border=5)
         self.pointaf = wx.CheckBox(self.main_panel, -1, label='3')
         self.mp_sizer.Add(self.pointaf, pos=(3,3), flag=wx.ALL, border=5)
@@ -361,13 +361,13 @@ class Main_Frame(wx.Frame):
         :return: pointscore - - the points calculated / score
         name is the Key for the dict datarows and datapoint is the dataclass H2pdata data
         """
-        pointscore = 0
+        self.pointscore = 0
 
         for name, datapoint in self.datarows.items():
             if self.statckbx(datapoint.ckboxname):
-                pointscore += int(datapoint.pointval)
-        self.pntvalue.SetLabel(str(pointscore))
-        return pointscore
+                self.pointscore += int(datapoint.pointval)
+        self.pntvalue.SetLabel(str(self.pointscore))
+        return self.pointscore
 
     ##########  calc using regression formula
 
@@ -395,38 +395,49 @@ class Main_Frame(wx.Frame):
         C2 - A. Fib a 0 if present or 1 if present
         C3 - PASP in mmHg
         C4 - age in years
-        C5 - Filling pressure (E/e`)
-        But all these vales on the the dataclass for each element - regvalue
+        C5 - Filling pressure (E/e`) from Echocardiogram
+        But all these vales are in the dataclass for each element - regvalue
 
             regdata = datapoint.regval
             regctrl = datapoint.regctrltype
             print( regdata, regctrl)
 
         Have to use the getattr again (see above) seems a bit convoluted, and need to read about this more
+
+        So while calculating the risk score will also be building the report string output as well
+        want to try to build as an HTML string
         """
+        self.regstr = ''
         logOdds = -9.19174463966566
         for key, datapoint in self.datarows.items():
             ctrl = getattr(self, datapoint.regname, None)
             if ctrl:
                 if isinstance(ctrl, wx.SpinCtrlDouble):
                     datapoint.userreg = ctrl.GetValue()
+                    self.regstr += f'{datapoint.vardescrip} = {datapoint.userreg}, <br>'
+                    #print(f'for {datapoint.vardescrip} = {datapoint.userreg} <br>,')
                 elif isinstance(ctrl, wx.ToggleButton):
                     datapoint.userreg = ctrl.GetValue()
                     datapoint.userreg = 1 if datapoint.userreg else 0
+                    self.regstr += f'{datapoint.vardescrip} = {'has' if datapoint.userreg else 'dose not have'} A. Fib,<br>'
                 elif isinstance(ctrl, wx.StaticText):
                     datapoint.userreg = ctrl.GetLabel()
                     datapoint.userreg = 0
-            #print(f'{datapoint.regval}  {datapoint.userreg}')
+
             # add the product of each of these to get the final Log Odds value (F2 in comment above)
             logOdds += float(datapoint.userreg) * datapoint.regval
-            #print(f'{datapoint.userreg:.2f}')
-        #print(f'log Odds: {logOdds:.3f}')
+
         G2 = 2.71828182845904**logOdds
-        #print(f'G2: {G2:.3f}')
-        ProbHFpEF = G2 / (1 + G2) * 100
-        #print(f'ProbHFpEF: {ProbHFpEF:.3f}')
-        self.regvalue.SetLabel(f'{ProbHFpEF:.3f}')
-        return ProbHFpEF
+
+        self.ProbHFpEF = G2 / (1 + G2) * 100
+
+        self.regvalue.SetLabel(f'{self.ProbHFpEF:.3f}')
+
+        self.regrptstr = (f'<p>Using the regression equation to calculate the H2FpEF risk score = {self.ProbHFpEF:.3f}</p> <br>' 
+                     f'{self.regstr}<p>')
+        print (self.regrptstr)
+
+        return (self.ProbHFpEF, self.regstr)
 
     def on_reset(self, event):
         # reset all the control
