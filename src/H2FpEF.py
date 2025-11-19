@@ -353,6 +353,7 @@ class Main_Frame(wx.Frame):
             is_checked = ckbx.GetValue()
             return is_checked
 
+    ##########  calc using point score
 
     def calc_points(self, event):
         """
@@ -360,14 +361,25 @@ class Main_Frame(wx.Frame):
         :param event: from Points Calculate button
         :return: pointscore - - the points calculated / score
         name is the Key for the dict datarows and datapoint is the dataclass H2pdata data
+
+        and build the basic point score report as well
         """
         self.pointscore = 0
+        self.pntstr = self.pntrepstr = ''
 
         for name, datapoint in self.datarows.items():
             if self.statckbx(datapoint.ckboxname):
                 self.pointscore += int(datapoint.pointval)
+                self.pntstr += f'{datapoint.vardescrip} = {datapoint.pointval},\n'
         self.pntvalue.SetLabel(str(self.pointscore))
-        return self.pointscore
+
+        self.pntrptstr = (f'Using the clinic point values to calculate the H2FpEF risk score = {self.pointscore}\n'
+                          f'{self.pntstr}\n')
+        self.pntrptstr += (f'\nUsing the point score nomogram suggest values <= 1 unlikely to have HFpEF,\nwhile those with'
+                           f' >= 6 to have HFpEF,\nand those >= 2 and <=5 may warrant further workup or referral.\n')
+        print(self.pntrptstr)
+
+        return (self.pointscore, self.pntrptstr)
 
     ##########  calc using regression formula
 
@@ -405,21 +417,21 @@ class Main_Frame(wx.Frame):
         Have to use the getattr again (see above) seems a bit convoluted, and need to read about this more
 
         So while calculating the risk score will also be building the report string output as well
-        want to try to build as an HTML string
         """
-        self.regstr = ''
+        self.regstr = self.regrptstr =  ''
+
         logOdds = -9.19174463966566
+
         for key, datapoint in self.datarows.items():
             ctrl = getattr(self, datapoint.regname, None)
             if ctrl:
                 if isinstance(ctrl, wx.SpinCtrlDouble):
                     datapoint.userreg = ctrl.GetValue()
-                    self.regstr += f'{datapoint.vardescrip} = {datapoint.userreg}, <br>'
-                    #print(f'for {datapoint.vardescrip} = {datapoint.userreg} <br>,')
+                    self.regstr += f'{datapoint.vardescrip} = {datapoint.userreg},\n'
                 elif isinstance(ctrl, wx.ToggleButton):
                     datapoint.userreg = ctrl.GetValue()
                     datapoint.userreg = 1 if datapoint.userreg else 0
-                    self.regstr += f'{datapoint.vardescrip} = {'has' if datapoint.userreg else 'dose not have'} A. Fib,<br>'
+                    self.regstr += f'{datapoint.vardescrip} = {'has' if datapoint.userreg else 'dose not have'} A. Fib,\n'
                 elif isinstance(ctrl, wx.StaticText):
                     datapoint.userreg = ctrl.GetLabel()
                     datapoint.userreg = 0
@@ -433,9 +445,12 @@ class Main_Frame(wx.Frame):
 
         self.regvalue.SetLabel(f'{self.ProbHFpEF:.3f}')
 
-        self.regrptstr = (f'<p>Using the regression equation to calculate the H2FpEF risk score = {self.ProbHFpEF:.3f}</p> <br>' 
-                     f'{self.regstr}<p>')
-        print (self.regrptstr)
+        self.regrptstr = (f'Using the regression equation to calculate the H2FpEF risk score = {self.ProbHFpEF:.3f}\n' 
+                     f'{self.regstr}\n')
+        self.regrptstr +=  (f'You can estimate the cut-offs from the Circulation articles authors by back referencing\n'
+                            f'the regression value with the corresponding point score\n')
+        self.regrptstr += (f'\nUsing the point score nomogram suggest values <= 1 unlikely to have HFpEF,\nwhile those with'
+                           f' >= 6 to have HFpEF,\nand those >= 2 and <=5 may warrant further workup or referral.\n')
 
         return (self.ProbHFpEF, self.regstr)
 
@@ -459,6 +474,14 @@ class Main_Frame(wx.Frame):
         self.regvalue.SetLabel('0-1')
 
 
+    def on_report(self, event):
+        """
+        display a brief report and place on the clipboard for the user to review
+        and possible paste in to a working document evaluating a specific patient.
+        :param event:
+        :return:
+        """
+        pass
 
 if __name__ == "__main__":
     app = wx.App()
