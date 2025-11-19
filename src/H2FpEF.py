@@ -305,7 +305,7 @@ class Main_Frame(wx.Frame):
         self.nomo_bitmap = wx.StaticBitmap(self.main_panel, -1, wx.Bitmap(self.nomo_img))
         self.mp_sizer.Add(self.nomo_bitmap, pos=(9,0), span=(1,9), flag=wx.ALL, border=5)
 
-        #add cal / reset buttons
+        #add cal / reset  / show report buttons
         self.pointcalc = wx.Button(self.main_panel, -1, "Points Calculate")
         self.pointcalc.Bind(wx.EVT_BUTTON, self.calc_points)
         self.mp_sizer.Add(self.pointcalc, pos=(10,1), flag=wx.ALL, border=5)
@@ -317,6 +317,10 @@ class Main_Frame(wx.Frame):
         self.reset = wx.Button(self.main_panel, -1, "Reset")
         self.reset.Bind(wx.EVT_BUTTON, self.on_reset)
         self.mp_sizer.Add(self.reset, pos=(10,2), flag=wx.ALL|wx.ALIGN_RIGHT, border=5)
+
+        self.show_report_btn = wx.Button(self.main_panel, -1, "Show Report")
+        self.show_report_btn.Bind(wx.EVT_BUTTON, self.on_show_report)
+        self.mp_sizer.Add(self.show_report_btn, pos=(11,2), flag=wx.ALL|wx.ALIGN_RIGHT, border=5)
 
         self.main_panel.SetSizer(self.mp_sizer)
         #return main_panel
@@ -375,9 +379,9 @@ class Main_Frame(wx.Frame):
 
         self.pntrptstr = (f'Using the clinic point values to calculate the H2FpEF risk score = {self.pointscore}\n'
                           f'{self.pntstr}\n')
-        self.pntrptstr += (f'\nUsing the point score nomogram suggest values <= 1 unlikely to have HFpEF,\nwhile those with'
-                           f' >= 6 to have HFpEF,\nand those >= 2 and <=5 may warrant further workup or referral.\n')
-        print(self.pntrptstr)
+        #self.pntrptstr += (f'\nUsing the point score nomogram suggest values <= 1 unlikely to have HFpEF,\nwhile those with'
+        #                   f' >= 6 to have HFpEF,\nand those >= 2 and <=5 may warrant further workup or referral.\n')
+        #print(self.pntrptstr)
 
         return (self.pointscore, self.pntrptstr)
 
@@ -447,10 +451,12 @@ class Main_Frame(wx.Frame):
 
         self.regrptstr = (f'Using the regression equation to calculate the H2FpEF risk score = {self.ProbHFpEF:.3f}\n' 
                      f'{self.regstr}\n')
-        self.regrptstr +=  (f'You can estimate the cut-offs from the Circulation articles authors by back referencing\n'
-                            f'the regression value with the corresponding point score\n')
-        self.regrptstr += (f'\nUsing the point score nomogram suggest values <= 1 unlikely to have HFpEF,\nwhile those with'
-                           f' >= 6 to have HFpEF,\nand those >= 2 and <=5 may warrant further workup or referral.\n')
+        #self.regrptstr +=  (f'You can estimate the cut-offs from the Circulation articles authors by back referencing\n'
+        #                    f'the regression value with the corresponding point score\n')
+        #self.regrptstr += (f'\nUsing the point score nomogram suggest values <= 1 unlikely to have HFpEF,\nwhile those with'
+        #                   f' >= 6 are likely to have HFpEF,\nand those >= 2 and <=5 may warrant further workup or referral.\n')
+
+        #print(self.regrptstr)
 
         return (self.ProbHFpEF, self.regstr)
 
@@ -474,14 +480,33 @@ class Main_Frame(wx.Frame):
         self.regvalue.SetLabel('0-1')
 
 
-    def on_report(self, event):
+    def on_show_report(self, event):
         """
-        display a brief report and place on the clipboard for the user to review
-        and possible paste in to a working document evaluating a specific patient.
+        display a brief report
+        - display in a dialog
+        - copy to clipboard to past into their working document
+        - could possibly be 2 headers one for Poin
+        ts and one for Regression if chose to do both
         :param event:
         :return:
+        - might want to  remove the interpretation from the Points / Reg reports and but a combined at the end of the
+        report string
         """
-        pass
+        self.final_report_str = ''
+        if self.pntrptstr:
+            self.final_report_str += self.pntrptstr + '\\n'
+        if self.regrptstr:
+            self.final_report_str += self.regrptstr + '\\n'
+        self.final_report_str += (f'The Circulation article authors suggest the cutoffs using the point score nomogram.\n'
+                                  f'They suggest that:\n- values <= 1 as unlikely to have HFpEF\n'
+                                  f'- wile those with >= 6 are likely to have HFpEF,\n'
+                                  f'- and those >= 2 and <=5 may warrant further workup or referral.\n')
+        self.final_report_str += (f'You can estimate the cutoffs for the regression score by using the cutoffs\n'
+                                  f'for the Point score and back referencing the regression value with the\n'
+                                  f'corresponding point score values on the nomogram.\n')
+        print(self.final_report_str)
+
+
 
 if __name__ == "__main__":
     app = wx.App()
