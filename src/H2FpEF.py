@@ -494,17 +494,27 @@ class Main_Frame(wx.Frame):
         """
         self.final_report_str = ''
         if self.pntrptstr:
-            self.final_report_str += self.pntrptstr + '\\n'
+            self.final_report_str += self.pntrptstr + '\n'
         if self.regrptstr:
-            self.final_report_str += self.regrptstr + '\\n'
+            self.final_report_str += self.regrptstr + '\n'
         self.final_report_str += (f'The Circulation article authors suggest the cutoffs using the point score nomogram.\n'
                                   f'They suggest that:\n- values <= 1 as unlikely to have HFpEF\n'
                                   f'- wile those with >= 6 are likely to have HFpEF,\n'
-                                  f'- and those >= 2 and <=5 may warrant further workup or referral.\n')
+                                  f'- and those >= 2 and <=5 may warrant further workup or referral.\n\n')
         self.final_report_str += (f'You can estimate the cutoffs for the regression score by using the cutoffs\n'
                                   f'for the Point score and back referencing the regression value with the\n'
                                   f'corresponding point score values on the nomogram.\n')
         print(self.final_report_str)
+
+        rep_dlg = wx.MessageDialog(self, self.final_report_str, 'H2FpEF scores', wx.OK )
+        rep_dlg.ShowModal()
+        rep_dlg.Destroy()
+
+        # copy to the system clipboard
+
+        if wx.TheClipboard.Open():
+            wx.TheClipboard.SetData(wx.TextDataObject(self.final_report_str))
+            wx.TheClipboard.Close()
 
 
 
