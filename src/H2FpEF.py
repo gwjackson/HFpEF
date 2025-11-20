@@ -80,6 +80,10 @@ class Main_Frame(wx.Frame):
         self.CreateStatusBar()
         self.main_panel = self.create_main_panel()
 
+        # setting some default values
+        self.regrptstr = None
+        self.pntrptstr = None
+
     def create_menu(self):
         """
         Build / set up the menu bar
@@ -478,6 +482,8 @@ class Main_Frame(wx.Frame):
         # now clear  the StaticText in the GUI
         self.pntvalue.SetLabel('0-9')
         self.regvalue.SetLabel('0-1')
+        # and clear the report
+        self.final_report_str = ''
 
 
     def on_show_report(self, event):
@@ -493,6 +499,10 @@ class Main_Frame(wx.Frame):
         report string
         """
         self.final_report_str = ''
+
+        if not (self.pntrptstr or self.regrptstr):
+            wx.MessageBox("Please enter values for either the Points or Regression", "Error", wx.OK | wx.ICON_INFORMATION)
+            return
         if self.pntrptstr:
             self.final_report_str += self.pntrptstr + '\n'
         if self.regrptstr:
@@ -504,9 +514,9 @@ class Main_Frame(wx.Frame):
         self.final_report_str += (f'You can estimate the cutoffs for the regression score by using the cutoffs\n'
                                   f'for the Point score and back referencing the regression value with the\n'
                                   f'corresponding point score values on the nomogram.\n')
-        print(self.final_report_str)
+        #print(self.final_report_str)
 
-        rep_dlg = wx.MessageDialog(self, self.final_report_str, 'H2FpEF scores', wx.OK )
+        rep_dlg = wx.MessageDialog(self, self.final_report_str, 'H2FpEF scores (report is on the system Clipboard)', wx.OK|wx.OK_DEFAULT)
         rep_dlg.ShowModal()
         rep_dlg.Destroy()
 
