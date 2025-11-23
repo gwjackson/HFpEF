@@ -507,6 +507,15 @@ class Main_Frame(wx.Frame):
             self.final_report_str += self.pntrptstr + '\n'
         if self.regrptstr:
             self.final_report_str += self.regrptstr + '\n'
+
+            # copy to the system clipboard
+
+        if wx.TheClipboard.Open():
+            wx.TheClipboard.SetData(wx.TextDataObject(self.final_report_str))
+            wx.TheClipboard.Close()
+
+            # and now add the interpretation
+
         self.final_report_str += (f'The Circulation article authors suggest the cutoffs using the point score nomogram.\n'
                                   f'They suggest that:\n- values <= 1 as unlikely to have HFpEF\n'
                                   f'- wile those with >= 6 are likely to have HFpEF,\n'
@@ -520,11 +529,7 @@ class Main_Frame(wx.Frame):
         rep_dlg.ShowModal()
         rep_dlg.Destroy()
 
-        # copy to the system clipboard
-
-        if wx.TheClipboard.Open():
-            wx.TheClipboard.SetData(wx.TextDataObject(self.final_report_str))
-            wx.TheClipboard.Close()
+        return
 
 
 
