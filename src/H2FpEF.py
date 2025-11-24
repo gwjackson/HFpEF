@@ -484,6 +484,8 @@ class Main_Frame(wx.Frame):
         self.regvalue.SetLabel('0-1')
         # and clear the report
         self.final_report_str = ''
+        self.pntrptstr = ''
+        self.regrptstr = ''
 
 
     def on_show_report(self, event):
@@ -508,7 +510,8 @@ class Main_Frame(wx.Frame):
         if self.regrptstr:
             self.final_report_str += self.regrptstr + '\n'
 
-            # copy to the system clipboard
+            # copy to the system clipboard; feel like the interpretation should not be part of the final report
+            # been going back and forth on this
 
         if wx.TheClipboard.Open():
             wx.TheClipboard.SetData(wx.TextDataObject(self.final_report_str))
