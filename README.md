@@ -28,7 +28,7 @@ AAFP Journal (may be behind a membership wall)https://www.aafp.org/pubs/afp/issu
 
 License:
 
-Not sure what the license will be, but will be open and GNU or MIT?
+The license is MIT.
 
 Dependencies:
 
