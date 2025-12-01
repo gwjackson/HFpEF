@@ -38,7 +38,7 @@ class Main_Frame(wx.Frame):
 
 
     def __init__(self):
-        super().__init__(None, title='H2FpEF - risk calculator  (patients with EF >= 50%)', size=(600, 700), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
+        super().__init__(None, title='H2FpEF - risk calculator  (patients with EF >= 50%)', size=(710, 700), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
 
         # table data
         # not done yet but may use the metadata to automate the build of the initial GUI rows :-)
@@ -198,20 +198,26 @@ class Main_Frame(wx.Frame):
     def create_main_panel(self):
         self.main_panel = wx.Panel(self)
         self.mp_sizer = wx.GridBagSizer(10,10)
+        self.index_font = wx.Font(14, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
 
         self.colblk = wx.StaticText(self.main_panel, label='  ')
         self.mp_sizer.Add(self.colblk, pos=(0,0), flag=wx.ALL, border=5)
         self.colclivar = wx.StaticText(self.main_panel, label='Clinical Variable')
+        self.colclivar.SetFont(self.index_font)
         self.mp_sizer.Add(self.colclivar, pos=(0,1), flag=wx.ALL, border=5)
         self.colvalue = wx.StaticText(self.main_panel, label='Values')
+        self.colvalue.SetFont(self.index_font)
         self.mp_sizer.Add(self.colvalue, pos=(0,2), flag=wx.ALL, border=5)
         self.colpoints = wx.StaticText(self.main_panel, label='Points\nScore')
+        self.colpoints.SetFont(self.index_font)
         self.mp_sizer.Add(self.colpoints, pos=(0,3), flag=wx.ALL, border=5)
         self.colreg = wx.StaticText(self.main_panel, label='Regression\nequation')
+        self.colreg.SetFont(self.index_font)
         self.mp_sizer.Add(self.colreg, pos=(0,4), flag=wx.ALL, border=5)
 
 
         self.keyH2 = wx.StaticText(self.main_panel, label='H2')
+        self.keyH2.SetFont(self.index_font)
         self.mp_sizer.Add(self.keyH2, pos=(1,0), span= (2,1), flag=wx.ALL, border=5)
         self.cvheavy = wx.StaticText(self.main_panel, label='Heavy')
         self.mp_sizer.Add(self.cvheavy, pos=(1,1), flag=wx.ALL, border=5)
@@ -236,6 +242,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.reghtn, pos=(2,4), flag=wx.ALL, border=5)
 
         self.keyaf = wx.StaticText(self.main_panel, label='F')
+        self.keyaf.SetFont(self.index_font)
         self.mp_sizer.Add(self.keyaf, pos=(3,0), flag=wx.ALL, border=5)
         self.cvaf = wx.StaticText(self.main_panel, label='Atrial Fibrillation')
         self.mp_sizer.Add(self.cvaf, pos=(3,1), flag=wx.ALL, border=5)
@@ -249,6 +256,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.regaf, pos=(3,4), flag=wx.ALL, border=5)
 
         self.keyph = wx.StaticText(self.main_panel, label='P')
+        self.keyph.SetFont(self.index_font)
         self.mp_sizer.Add(self.keyph, pos=(4,0), flag=wx.ALL, border=5)
         self.cvph = wx.StaticText(self.main_panel, label='Pulmonary Hypertension')
         self.mp_sizer.Add(self.cvph, pos=(4,1), flag=wx.ALL, border=5)
@@ -263,6 +271,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.regph, pos=(4,4), flag=wx.ALL, border=5)
 
         self.keyold = wx.StaticText(self.main_panel, label='E')
+        self.keyold.SetFont(self.index_font)
         self.mp_sizer.Add(self.keyold, pos=(5,0), flag=wx.ALL, border=5)
         self.cvold = wx.StaticText(self.main_panel, label='Elder')
         self.mp_sizer.Add(self.cvold, pos=(5,1), flag=wx.ALL, border=5)
@@ -277,6 +286,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.regold, pos=(5,4), flag=wx.ALL, border=5)
 
         self.keyf = wx.StaticText(self.main_panel, label='F')
+        self.keyf.SetFont(self.index_font)
         self.mp_sizer.Add(self.keyf, pos=(6,0), flag=wx.ALL, border=5)
         self.cvf = wx.StaticText(self.main_panel, label='Filling Pressure')
         self.mp_sizer.Add(self.cvf, pos=(6,1), flag=wx.ALL, border=5)
@@ -292,13 +302,17 @@ class Main_Frame(wx.Frame):
 
         # score total rows
         self.pntscore = wx.StaticText(self.main_panel, label='Point - Score: 0 - 9')
+        self.pntscore.SetFont(self.index_font)
         self.mp_sizer.Add(self.pntscore, pos=(7, 2), flag=wx.ALL | wx.ALIGN_RIGHT, border=5)
         self.pntvalue = wx.StaticText(self.main_panel, label='0 - 9')
+        self.pntvalue.SetFont(self.index_font)
         self.mp_sizer.Add(self.pntvalue, pos=(7, 3), flag=wx.ALL, border=5)
 
         self.regscore = wx.StaticText(self.main_panel, label='Regression - Score: 0.0 - 1.0')
+        self.regscore.SetFont(self.index_font)
         self.mp_sizer.Add(self.regscore, pos=(8, 2), flag=wx.ALL | wx.ALIGN_RIGHT, border=5)
         self.regvalue = wx.StaticText(self.main_panel, label='0.0 - 1.0')
+        self.regvalue.SetFont(self.index_font)
         self.mp_sizer.Add(self.regvalue, pos=(8, 4), flag=wx.ALL, border=5)
 
         # the scoring nomogram
@@ -307,7 +321,7 @@ class Main_Frame(wx.Frame):
         self.nomo_img = wx.Image('nihms_score_1.png', wx.BITMAP_TYPE_PNG)
         self.nomo_img = self.nomo_img.Rescale(frame_width, frame_height, quality=wx.IMAGE_QUALITY_HIGH)
         self.nomo_bitmap = wx.StaticBitmap(self.main_panel, -1, wx.Bitmap(self.nomo_img))
-        self.mp_sizer.Add(self.nomo_bitmap, pos=(9,0), span=(1,9), flag=wx.ALL, border=5)
+        self.mp_sizer.Add(self.nomo_bitmap, pos=(9,0), span=(1,9), flag=wx.CENTER|wx.ALL, border=5)
 
         #add cal / reset  / show report buttons
         self.pointcalc = wx.Button(self.main_panel, -1, "Points Calculate")
@@ -328,6 +342,9 @@ class Main_Frame(wx.Frame):
 
         self.main_panel.SetSizer(self.mp_sizer)
         #return main_panel
+
+    def on_resize_evt(self, evt):
+        pass
 
     def regaf_on_toggle(self, event):
         if self.regaf.GetValue():
