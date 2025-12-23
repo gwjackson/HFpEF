@@ -29,11 +29,7 @@ class Main_Frame(wx.Frame):
     """
     main frame for the H2FpEF calculator
 
-    clinic data is dic of  key : namedtuples
-        {
-        clinic_variable (str) : (ckbox=str, points=int, reg_value=float, std_range=str, key=str),
-        ...
-        {
+    clinic data is dataclass
     """
 
 
@@ -99,10 +95,14 @@ class Main_Frame(wx.Frame):
 
         # Citation Menu and Submenu
         citationMenu = wx.Menu()
-        cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'Circulation 2018', 'Journal Circulation 2018')
+        cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'H2FpEF; Circulation 2018', 'Journal Circulation 2018')
         self.Bind(wx.EVT_MENU, self.on_circulation, cit_circulation_item)
-        cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'AAFP 2025', 'AAFP journal 2025')
+        cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'H2FpEF; AAFP 2025', 'AAFP journal 2025')
         self.Bind(wx.EVT_MENU, self.on_aafp, cit_circulation_item)
+        cit_ABA_Nat_item = citationMenu.Append(wx.ID_ANY, 'HFpEF-ABA; 2024', 'Nature Medicine')
+        self.Bind(wx.EVT_MENU, self.on_nmHF, cit_ABA_Nat_item)
+        cit_ABA_AAFP_item = citationMenu.Append(wx.ID_ANY, 'HFpEF-ABA AAFP', 'Assessing HFpEF-ABA' )
+        self.Bind(wx.EVT_MENU, self.on_aafp_aba, cit_ABA_AAFP_item)
         aboutMenu.AppendSubMenu(citationMenu, '&Citation')
 
         # License menu
@@ -192,6 +192,13 @@ class Main_Frame(wx.Frame):
     def on_gdmt_sympt(self, event):
         self.show_html_dialog("Signs_Symptoms.html", title="Signs and Symptoms", size=(550,600))
 
+    def on_nmHF(self, event):
+        url = 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11570987/'
+        webbrowser.open(url)
+
+    def on_aafp_aba(self, event):
+        url = 'https://www.aafp.org/pubs/afp/issues/2025/1200/pocg-heart-failure-exertional-dyspepsia.html'
+        webbrowser.open(url)
 
 
     # and now some sizers for the mainpanel plan is a 5 column x 10 row gridbagsizer
@@ -332,7 +339,7 @@ class Main_Frame(wx.Frame):
         self.regcalc.Bind(wx.EVT_BUTTON, self.reg_calc_score)
         self.mp_sizer.Add(self.regcalc, pos=(11,1), flag=wx.ALL, border=5)
 
-        self.hfpef_aba_clac = wx.Button(self.main_panel, -1, "HFpEF_ABA Calculate ‡")
+        self.hfpef_aba_clac = wx.Button(self.main_panel, -1, "HFpEF-ABA Calculate ‡")
         self.hfpef_aba_clac.Bind(wx.EVT_BUTTON, self.on_hfpef_aba_calc)
         self.mp_sizer.Add(self.hfpef_aba_clac, pos=(12,1), flag=wx.ALL, border=5)
 
