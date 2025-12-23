@@ -38,7 +38,7 @@ class Main_Frame(wx.Frame):
 
 
     def __init__(self):
-        super().__init__(None, title='H2FpEF - risk calculator  (patients with EF >= 50%)', size=(710, 700), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
+        super().__init__(None, title='H2FpEF - risk calculator  (patients with EF >= 50%)', size=(730, 750), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
 
         # table data
         # not done yet but may use the metadata to automate the build of the initial GUI rows :-)
@@ -221,7 +221,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.keyH2, pos=(1,0), span= (2,1), flag=wx.ALL, border=5)
         self.cvheavy = wx.StaticText(self.main_panel, label='Heavy')
         self.mp_sizer.Add(self.cvheavy, pos=(1,1), flag=wx.ALL, border=5)
-        self.valheavy = wx.StaticText(self.main_panel, label='Body mass index > 30 kg/m**2')
+        self.valheavy = wx.StaticText(self.main_panel, label='Body mass index > 30 kg/m**2 ‡')
         self.mp_sizer.Add(self.valheavy, pos=(1,2), flag=wx.ALL, border=5)
         self.pointheavy = wx.CheckBox(self.main_panel, -1, label='2')
         self.mp_sizer.Add(self.pointheavy, pos=(1,3), flag=wx.ALL, border=5)
@@ -246,7 +246,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.keyaf, pos=(3,0), flag=wx.ALL, border=5)
         self.cvaf = wx.StaticText(self.main_panel, label='Atrial Fibrillation')
         self.mp_sizer.Add(self.cvaf, pos=(3,1), flag=wx.ALL, border=5)
-        self.valaf = wx.StaticText(self.main_panel, label='Paroxysmal or Persistent A. Fib')
+        self.valaf = wx.StaticText(self.main_panel, label='Paroxysmal or Persistent A. Fib ‡')
         self.mp_sizer.Add(self.valaf, pos=(3,2), flag=wx.ALL, border=5)
         self.pointaf = wx.CheckBox(self.main_panel, -1, label='3')
         self.mp_sizer.Add(self.pointaf, pos=(3,3), flag=wx.ALL, border=5)
@@ -275,7 +275,7 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.keyold, pos=(5,0), flag=wx.ALL, border=5)
         self.cvold = wx.StaticText(self.main_panel, label='Elder')
         self.mp_sizer.Add(self.cvold, pos=(5,1), flag=wx.ALL, border=5)
-        self.valold = wx.StaticText(self.main_panel, label='Age > 60 years (years for regression)')
+        self.valold = wx.StaticText(self.main_panel, label='Age > 60 years (years for regression) ‡')
         self.mp_sizer.Add(self.valold, pos=(5,2), flag=wx.ALL, border=5)
         self.pointold = wx.CheckBox(self.main_panel, -1, label='1')
         self.mp_sizer.Add(self.pointold, pos=(5,3), flag=wx.ALL, border=5)
@@ -324,13 +324,17 @@ class Main_Frame(wx.Frame):
         self.mp_sizer.Add(self.nomo_bitmap, pos=(9,0), span=(1,9), flag=wx.CENTER|wx.ALL, border=5)
 
         #add cal / reset  / show report buttons
-        self.pointcalc = wx.Button(self.main_panel, -1, "Points Calculate")
+        self.pointcalc = wx.Button(self.main_panel, -1, "H2FpEF Points Calculate")
         self.pointcalc.Bind(wx.EVT_BUTTON, self.calc_points)
         self.mp_sizer.Add(self.pointcalc, pos=(10,1), flag=wx.ALL, border=5)
 
-        self.regcalc = wx.Button(self.main_panel, -1, "Regression Calculate")
+        self.regcalc = wx.Button(self.main_panel, -1, "H2FpEF Regression Calculate")
         self.regcalc.Bind(wx.EVT_BUTTON, self.reg_calc_score)
         self.mp_sizer.Add(self.regcalc, pos=(11,1), flag=wx.ALL, border=5)
+
+        self.hfpef_aba_clac = wx.Button(self.main_panel, -1, "HFpEF_ABA Calculate ‡")
+        self.hfpef_aba_clac.Bind(wx.EVT_BUTTON, self.on_hfpef_aba_calc)
+        self.mp_sizer.Add(self.hfpef_aba_clac, pos=(12,1), flag=wx.ALL, border=5)
 
         self.reset = wx.Button(self.main_panel, -1, "Reset")
         self.reset.Bind(wx.EVT_BUTTON, self.on_reset)
@@ -480,6 +484,37 @@ class Main_Frame(wx.Frame):
         #print(self.regrptstr)
 
         return (self.ProbHFpEF, self.regstr)
+
+    def on_hfpef_aba_calc(self, evt):
+        """
+        Uses the HFpEF ABA calculator to calculate points score.
+         Main source - Reddy: Nat .2024;30(8):2258-2264
+         AAFP - Saguil - Am Fam Physician. 2025;112(6):696-687
+         added as requires less data and the data it does require overlaps the H2HpEF data
+         Regression equation
+         F2 (Log odd) = -7.78875077116607 + 0.0625642747159337 *C1 + 0.135149246234458*C2  + 2.04080564803471*C3
+         G2 (odds) = 2.71828182845904^F2
+         Prob of HFpEF = G2 / (1 + G2) * 100
+         see .xlsx sheet linked in the primary document (NIHMS2030519-supplement-HFpEF-ABA_calculator.xlsx)
+        """
+        # need error messages
+        print(self.regheavy.GetValue())
+        print(self.regaf.GetValue())
+        print(self.regold.GetValue())
+
+        self.log_odds_aba = ( -7.78875077116607
+        + (0.135149246234458 * (self.regheavy.GetValue()))
+        + (0.0625642747159337 * (self.regold.GetValue()))
+        + (2.04080564803471 * (self.regaf.GetValue())))
+
+        self.odds_aba = 2.71828182845904 ** self.log_odds_aba
+        self.hfp_aba_prob = self.odds_aba / (1 + self.odds_aba) * 100
+
+        print(self.hfp_aba_prob)
+        pass
+
+
+
 
     def on_reset(self, event):
         # reset all the control
