@@ -36,3 +36,9 @@ For now the only dependencies are; Python >= 3.13 and wxPython >= 4
 
 Comments / suggestions are appreciated
 
+So; packaging not done yet! 
+To use you will need to clone this repository into a directory of your choice
+but soon will have a list of files and packaging (but but still learning that)
+
+
+
