@@ -531,8 +531,6 @@ class Main_Frame(wx.Frame):
                     f'A. Fib status {C3}\n'
                     f'The Probability of HFpEF = {self.hfp_aba_prob:.3f}\n')
 
-
-
         if wx.TheClipboard.Open():
             wx.TheClipboard.SetData(wx.TextDataObject(self.abarptstr))
             wx.TheClipboard.Close()
