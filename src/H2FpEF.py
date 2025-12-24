@@ -518,7 +518,23 @@ class Main_Frame(wx.Frame):
         self.hfp_aba_prob = self.odds_aba / (1 + self.odds_aba) * 100
 
         print(self.hfp_aba_prob)
-        pass
+
+        abarptstr = (f'Using the 3 data elements for the HFpEF-ABA calculator\n'
+                    f'Age {C1},\n'
+                    f'BMI {C2}\n'
+                    f'A. Fib status {C3}\n'
+                    f'The Probability of HFpEF = {self.hfp_aba_prob:.3f}\n')
+
+        if wx.TheClipboard.Open():
+            wx.TheClipboard.SetData(wx.TextDataObject(self.abarptstr))
+            wx.TheClipboard.Close()
+
+        rep_dlg = wx.MessageDialog(self, self.final_report_str, 'HFpEF-ABA scores (report is on the system Clipboard)',
+                                   wx.OK | wx.OK_DEFAULT)
+        rep_dlg.ShowModal()
+        rep_dlg.Destroy()
+
+        return
 
 
 
