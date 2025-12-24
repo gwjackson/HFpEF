@@ -506,37 +506,43 @@ class Main_Frame(wx.Frame):
         """
         # need error messages
         print(self.regheavy.GetValue())
+        # C2 BMI - float
+        C2 = self.regheavy.GetValue()
         print(self.regaf.GetValue())
+        #C3 A. Fib - bool
+        C3 = self.regaf.GetValue()
         print(self.regold.GetValue())
+        # C1 Age - float
+        C1 = self.regold.GetValue()
 
         self.log_odds_aba = ( -7.78875077116607
-        + (0.135149246234458 * (self.regheavy.GetValue()))
-        + (0.0625642747159337 * (self.regold.GetValue()))
-        + (2.04080564803471 * (self.regaf.GetValue())))
+        + 0.135149246234458 * C2
+        + 0.0625642747159337 * C1
+        + 2.04080564803471 * C3)
 
         self.odds_aba = 2.71828182845904 ** self.log_odds_aba
         self.hfp_aba_prob = self.odds_aba / (1 + self.odds_aba) * 100
 
         print(self.hfp_aba_prob)
 
-        abarptstr = (f'Using the 3 data elements for the HFpEF-ABA calculator\n'
+        self.abarptstr = (f'Using the 3 data elements for the HFpEF-ABA calculator\n'
                     f'Age {C1},\n'
                     f'BMI {C2}\n'
                     f'A. Fib status {C3}\n'
                     f'The Probability of HFpEF = {self.hfp_aba_prob:.3f}\n')
 
+
+
         if wx.TheClipboard.Open():
             wx.TheClipboard.SetData(wx.TextDataObject(self.abarptstr))
             wx.TheClipboard.Close()
 
-        rep_dlg = wx.MessageDialog(self, self.final_report_str, 'HFpEF-ABA scores (report is on the system Clipboard)',
+        rep_dlg = wx.MessageDialog(self, self.abarptstr, 'HFpEF-ABA scores (report is on the system Clipboard)',
                                    wx.OK | wx.OK_DEFAULT)
         rep_dlg.ShowModal()
         rep_dlg.Destroy()
 
         return
-
-
 
 
     def on_reset(self, event):
