@@ -20,11 +20,15 @@
 
 Initial source files / docs 
 
-On PubMed https://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/
+On PubMed: HF2pEF  https://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/
 
-Excel calculator https://pmc.ncbi.nlm.nih.gov/articles/instance/6202181/bin/NIHMS970899-supplement-Online_Calculator.xlsx
+Excel calculator:  HF2pEF  https://pmc.ncbi.nlm.nih.gov/articles/instance/6202181/bin/NIHMS970899-supplement-Online_Calculator.xlsx
 
-AAFP Journal (may be behind a membership wall)https://www.aafp.org/pubs/afp/issues/2025/1000/heart-failure-preserved-ejection-fraction.html
+AAFP Journal: HF2pEF (may be behind a membership wall)https://www.aafp.org/pubs/afp/issues/2025/1000/heart-failure-preserved-ejection-fraction.html
+
+AAFP Journal: HFpEF-ABA https://www.aafp.org/pubs/afp/issues/2025/1200/pocg-heart-failure-exertional-dyspepsia.html
+
+Nature: HFpEF-ABA https://pmc.ncbi.nlm.nih.gov/articles/PMC11570987/
 
 License:
 
@@ -33,6 +37,7 @@ The license is MIT.
 Dependencies:
 
 For now the only dependencies are; Python >= 3.13 and wxPython >= 4
+(should run on Python > 3.7)
 
 Comments / suggestions are appreciated
 
