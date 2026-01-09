@@ -15,7 +15,7 @@
 <br/>
 
 </p>
-<p><font size="+3"<b>How to use the H<sub>2</sub>FpEF tool</b></font></p>
+<p><font size="+3"<b>How to use the H<sub>2</sub>FpEF / HFpEF-ABA tool</b></font></p>
 <p><br/>
 
 </p>
@@ -24,23 +24,25 @@ general Internal Medicine.</p>
 <p><br/>
 
 </p>
-<p>This application is
-designed to but opened on demand as pop-up or launched independently.
+<p>This application is designed to but opened on demand as pop-up or launched independently.
 It is based on the H<sub>2</sub>FpHF screen from the article in <u>http://pmc.ncbi.nlm.nih.gov/articles/PMC6202181/</u> Circulation
 2018. The is also a citation for an article from a recent edition
 in the <u>http://www.aafp.org/pubs/afp/issues/2025/1000/heart-failure-preserved-ejection-fraction.html</u> AAFP
-Journal where I (sadly and belatedly) discovered this very useful
-tool.</p>
+Journal where I (sadly and belatedly) discovered this very useful tool.</p>
+<p>The HfPEF-ABA was subsequently developed to allow a simpler set of data elements just 3: BMI, Age,
+    and presence of absense of A. Fib.  The original paper; Reddy: Nat .2024;30(8):2258-2264, and a review in
+    Saguil - Am Fam Physician. 2025;112(6):696-687.  The Reddy article also has a link to an Excel file which includes
+    the complete algorithm, the AAFP only lists the Log Odds calculations.  </p>
 <p><br/>
 
 </p>
 <p>The user interface
-is designed to copy the look of the screening table in the primary
-document but with an added column for data entry to be feed to the
-regression equation. 
+is designed to copy the look of the screening table in the primary H2FpEF document but with an added
+    column for data entry to be feed to the regression equation.  The HFpEF-ABA only requires 3 of the data
+    elements, Age, BMI, A. Fib, these have a  ‡ (double dagger) icon for eacy reference.
 </p>
 <ul>
-	<li><p>You may calculate the risk score using either or both protocols.
+	<li><p>You may calculate the risk score using either of the 3 protocols.
 	</p></li>
 	<li><p>You can
         calculate the risk score using either the <b>Points</b>
@@ -55,8 +57,7 @@ regression equation.
 	</ul>
 	<li><p>You can also
 	calculate the risk score using the regression equation form the
-	source article. 
-	</p>
+	source article. </p>
 	<ul>
 		<li><p>Hovering the
 		caret over the data entry box will display a tool-tip that lists
@@ -72,20 +73,15 @@ regression equation.
 		a simple present of not present, defaults to <b>No A. Fib</b>, simple toggle the button to move between options</p></li>
 	</ul>
 	<li><p>Click on the
-    <b>Regressioin Calcuate</b> to calculate the risk score
+    <b>Regression Calculate</b> to calculate the risk score
 	and will be displayed at the bottom of the column.</p></li>
+    <li>And the third option is to use the <b>HFpEF-ABA</b> calculate button.  You will only need to enter the 3 data items.</li>
 	<li><p>If you wish to
         reset the calculator the click the <b>Reset</b> and all
 	entry options will be zeroed out.</p></li>
-</ul>
+</ul> </p>
 <p><br/>
-
-</p>
-<p><br/>
-
-</p>
-<p>The authors suggest
-that a Points score of: 
+<p>The <b>H2EpEF</b> authors suggest that a Points score of:
 </p>
 <ul>
 	<li><p>&lt;= 1 would rule out HFpEF (regression score of ~&lt;=0.23)</p></li>
@@ -97,23 +93,20 @@ that a Points score of:
 	</p></li>
 	<li><p>Though cutoffs for the regression values were not given in the article.
         You can estimate the cutoffs for the regression score by using the cutoffs for the Point score
-        and back referencing the regression value with the corresponding point score values on the nomogram.</p></li>
-</ul>
+        and back referencing the regression value with the corresponding point score values on the nomogram.</p></li></ul>
+<p>While the authors of the <b>HFpEF-ABA</b> do not define any cut-off values for their scoring system.
 <p><br/>
 
 </p>
-<p>A brief report is
-displayed, and saved to the system ClipBoard as it may then pasted
-into a separate working document, perhaps your EMR, to record the
-screening values and score(s).</p>
+<p>A brief report is displayed, and saved to the system ClipBoard as it may then be pasted into a separate working
+    document, perhaps your EMR, to record the screening values and score(s).</p>
 
 <p><br/>
 
 </p>
 <p>Any question,
-requests, corrections; <br>please contact me: <a href="mailto:gwjackson53@gmail.com">gwjackson53@gmail.com"gwjackson53@gmail.com</a>
-<br>or send tickets / pull requests to the github site
-    <a href="https://github.com/gwjackson/HfpEF"> my GitHub repo</a>;
+requests, corrections; <br>please contact me: mailto:gwjackson53@gmail.com</a>
+<br>or send tickets / pull requests to the github site: https://github.com/gwjackson/HfpEF my GitHub repo</a>;
 </p>
 <p><br/>
 
