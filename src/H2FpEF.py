@@ -1,3 +1,8 @@
+# Author: Walker Jackson
+# email: gwjackson53@gmail.com
+# from source material listed in the code files.
+# intial commit - November 6, 2025
+
 import webbrowser
 from dataclasses import dataclass
 import wx
@@ -34,7 +39,7 @@ class Main_Frame(wx.Frame):
 
 
     def __init__(self):
-        super().__init__(None, title='H2FpEF - risk calculator  (patients with EF >= 50%)', size=(730, 750), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
+        super().__init__(None, title='H2FpEF - risk calculator  (patients with EF >= 50%)', size=(680, 730), style= wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER|wx.MAXIMIZE_BOX)
 
         # table data
         # not done yet but may use the metadata to automate the build of the initial GUI rows :-)
@@ -99,7 +104,7 @@ class Main_Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_circulation, cit_circulation_item)
         cit_circulation_item = citationMenu.Append(wx.ID_ANY, 'H2FpEF; AAFP 2025', 'AAFP journal 2025')
         self.Bind(wx.EVT_MENU, self.on_aafp, cit_circulation_item)
-        cit_ABA_Nat_item = citationMenu.Append(wx.ID_ANY, 'HFpEF-ABA; 2024', 'Nature Medicine')
+        cit_ABA_Nat_item = citationMenu.Append(wx.ID_ANY, 'HFpEF-ABA; Nat Med 2024', 'Nature Medicine')
         self.Bind(wx.EVT_MENU, self.on_nmHF, cit_ABA_Nat_item)
         cit_ABA_AAFP_item = citationMenu.Append(wx.ID_ANY, 'HFpEF-ABA AAFP', 'Assessing HFpEF-ABA' )
         self.Bind(wx.EVT_MENU, self.on_aafp_aba, cit_ABA_AAFP_item)
@@ -129,6 +134,24 @@ class Main_Frame(wx.Frame):
         menu_bar.Append(gdmtMenu, '&GDMT')
 
         self.SetMenuBar(menu_bar)
+
+
+    def h2fef_validator(self):
+        """
+        to validate the H2FpEF regression equation values
+        So the spinners ensure is a float / int as they are set up just need to test ranges
+        - toggle not need validation is yes / no and defaults to no
+        - int / floats default / resit to 0, which is not a valid value so can be test for valid (see HFpEF-ABA)
+        - get the 'study range' and reasonable compatability with life range passed by the widget
+        if in study range no notice given to user
+        if outside of study range  notice given to user but not forced to change the data they entered
+        BMI: 22.8 - 40.4  // <18.5 - > 40
+        PASP 25- 50 // 15 - 100
+        Age 41 - 79 // Adult age range
+        Doppler E/e` 6 - 21 // <8 - > 30
+        :return: Boolean
+        """
+        pass
 
 
     def on_license(self, event):
@@ -205,7 +228,7 @@ class Main_Frame(wx.Frame):
     def create_main_panel(self):
         self.main_panel = wx.Panel(self)
         self.mp_sizer = wx.GridBagSizer(10,10)
-        self.index_font = wx.Font(14, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
+        self.index_font = wx.Font(12, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
 
         self.colblk = wx.StaticText(self.main_panel, label='  ')
         self.mp_sizer.Add(self.colblk, pos=(0,0), flag=wx.ALL, border=5)
