@@ -136,24 +136,6 @@ class Main_Frame(wx.Frame):
         self.SetMenuBar(menu_bar)
 
 
-    def h2fef_validator(self):
-        """
-        to validate the H2FpEF regression equation values
-        So the spinners ensure is a float / int as they are set up just need to test ranges
-        - toggle not need validation is yes / no and defaults to no
-        - int / floats default / resit to 0, which is not a valid value so can be test for valid (see HFpEF-ABA)
-        - get the 'study range' and reasonable compatability with life range passed by the widget
-        if in study range no notice given to user
-        if outside of study range  notice given to user but not forced to change the data they entered
-        BMI: 22.8 - 40.4  // <18.5 - > 40
-        PASP 25- 50 // 15 - 100
-        Age 41 - 79 // Adult age range
-        Doppler E/e` 6 - 21 // <8 - > 30
-        :return: Boolean
-        """
-        pass
-
-
     def on_license(self, event):
         self.show_html_dialog("MIT_License.html", title="License and Disclaimer", size=(800,450))
 
@@ -258,6 +240,7 @@ class Main_Frame(wx.Frame):
         self.regheavy = wx.SpinCtrlDouble(self.main_panel, -1, value='0')
         self.regheavy.SetMinSize((60,-1))
         self.regheavy.SetDigits(2)
+        self.regheavy.SetRange(15,50)
         self.regheavy.SetToolTip(self.regValToolTip('BMI'))
         self.mp_sizer.Add(self.regheavy, pos=(1,4), flag=wx.ALL, border=5)
 
@@ -295,6 +278,7 @@ class Main_Frame(wx.Frame):
         self.pointph = wx.CheckBox(self.main_panel, -1, label='1')
         self.mp_sizer.Add(self.pointph, pos=(4,3), flag=wx.ALL, border=5)
         self.regph = wx.SpinCtrlDouble(self.main_panel, -1, value='0')
+        self.regph.SetRange(10, 150)
         self.regph.SetMinSize((60,-1))
         self.regph.SetDigits(2)
         self.regph.SetToolTip(self.regValToolTip('PH'))
@@ -310,6 +294,7 @@ class Main_Frame(wx.Frame):
         self.pointold = wx.CheckBox(self.main_panel, -1, label='1')
         self.mp_sizer.Add(self.pointold, pos=(5,3), flag=wx.ALL, border=5)
         self.regold = wx.SpinCtrlDouble(self.main_panel, -1, value='0')
+        self.regold.SetRange(30, 110)
         self.regold.SetMinSize((60, -1))
         self.regold.SetDigits(2)
         self.regold.SetToolTip(self.regValToolTip('Elder'))
@@ -325,6 +310,7 @@ class Main_Frame(wx.Frame):
         self.pointf = wx.CheckBox(self.main_panel, -1, label='1')
         self.mp_sizer.Add(self.pointf, pos=(6,3), flag=wx.ALL, border=5)
         self.regf = wx.SpinCtrlDouble(self.main_panel, -1, value='0')
+        self.regf.SetRange(5, 40)
         self.regf.SetMinSize((60, -1))
         self.regf.SetDigits(2)
         self.regf.SetToolTip(self.regValToolTip('FP'))
@@ -378,6 +364,26 @@ class Main_Frame(wx.Frame):
         #return main_panel
 
     def on_resize_evt(self, evt):
+        pass
+
+
+    def h2fef_validator(std_range, ga_range):
+        """
+        to validate the H2FpEF regression equation values
+        So the spinners ensure is a float / int as they are set up just need to test ranges
+        - toggle not need validation is yes / no and defaults to no
+        - int / floats default / resit to 0, which is not a valid value so can be test for valid (see HFpEF-ABA)
+        - get the 'study range' and reasonable compatability with life range passed by the widget
+        -in study range no notice given to user
+        - if outside of study range (std_range) // outside the generally accepted range (ga_range)
+         notice given to user but not forced to change the data they entered
+        BMI: 22.8 - 40.4  // <18.5 - > 40
+        PASP 25- 50 // 15 - 100
+        Age 41 - 79 // Adult age range
+        Doppler E/e` 6 - 21 // <8 - > 30
+        :return: Boolean
+        """
+        print(std_range, '  ', ga_range)
         pass
 
     def regaf_on_toggle(self, event):
