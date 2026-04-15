@@ -367,7 +367,7 @@ class Main_Frame(wx.Frame):
         pass
 
 
-    def h2fef_validator(std_range, ga_range):
+    def h2fef_validator(self, std_range, ga_range):
         """
         to validate the H2FpEF regression equation values
         So the spinners ensure is a float / int as they are set up just need to test ranges
