@@ -158,7 +158,7 @@ class Main_Frame(wx.Frame):
         """
         dlg = wx.Dialog(self, title=title, size=size, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
 
-
+        # WebView must have a parent her dialog - > dlg
         browser = webview.WebView.New(dlg)
         html_path = Path(html_filename).resolve().as_uri()
         browser.LoadURL(html_path)
@@ -169,9 +169,23 @@ class Main_Frame(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(browser, 1, wx.ALL | wx.EXPAND, 5)
 
-        btn = wx.Button(dlg, wx.ID_OK, label='&OK')
-        sizer.Add(btn, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # buttons
+        back_btn = wx.Button(dlg, wx.ID_ANY, "Back")
 
+        def on_back(event):
+            if browser.CanGoBack():
+                browser.GoBack()
+            event.Skip()
+
+        back_btn.Bind(wx.EVT_BUTTON, on_back)
+
+        ok_btn = wx.Button(dlg, wx.ID_OK, label='&OK')
+
+        btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        btn_sizer.Add(back_btn, 0, wx.RIGHT, 10)
+        btn_sizer.Add(ok_btn, 0)
+
+        sizer.Add(btn_sizer, 0, wx.ALIGN_CENTER | wx.ALL, 10)
         dlg.SetSizer(sizer)
 
         dlg.ShowModal()
