@@ -7,6 +7,7 @@ import webbrowser
 from dataclasses import dataclass
 import wx
 import wx.html
+import wx.html2 as webview
 from pathlib import Path
 
 
@@ -146,7 +147,7 @@ class Main_Frame(wx.Frame):
     def show_html_dialog(self, html_filename, title="HTML Viewer", size=(800,600)):
         """
         Helper function to display HTML files as info for the user.
-        It iss called w/the file name w/file to be in the same directory level as the app code
+        It is called w/the file name w/file to be in the same directory level as the app code
         and the title of the dialog
         some_on_event(self.event):
             show_html_dialog(parent, html_filename, title="HTML Viewer")
@@ -157,24 +158,20 @@ class Main_Frame(wx.Frame):
         """
         dlg = wx.Dialog(self, title=title, size=size, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
 
-        html_win = wx.html.HtmlWindow(dlg)
-        html_path = Path(__file__).resolve().parent / html_filename
-        print(html_path)
 
-        """
-        not clear why the .as_uri works but seems stable 
-        file:///{html_path}
-        and (html_path.as_uri)  <- old school ? deprecated
-        
-        """
-        html_win.LoadPage(f'file:///{html_path}')
-        #html_win.LoadPage(html_path.as_uri())
+        browser = webview.WebView.New(dlg)
+        html_path = Path(html_filename).resolve().as_uri()
+        browser.LoadURL(html_path)
+
+        # print(html_path)
 
         # Layout
-        btn = wx.Button(dlg, wx.ID_OK, label='&OK')
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(html_win, 1, wx.ALL | wx.EXPAND, 5)
+        sizer.Add(browser, 1, wx.ALL | wx.EXPAND, 5)
+
+        btn = wx.Button(dlg, wx.ID_OK, label='&OK')
         sizer.Add(btn, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
         dlg.SetSizer(sizer)
 
         dlg.ShowModal()
